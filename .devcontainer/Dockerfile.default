@@ -1,0 +1,19 @@
+FROM ghcr.io/insight-platform/savant-rs-py313:v0.5.15 AS dev
+
+### BEGIN: Setup dev user for rootful docker ###
+
+ARG REMOTE_USER
+ARG REMOTE_UID
+ARG REMOTE_GID
+
+RUN groupadd --gid ${REMOTE_GID} ${REMOTE_USER} \
+    && \
+    useradd --create-home \
+            --uid ${REMOTE_UID} \
+            --gid ${REMOTE_GID} \
+            --shell /bin/bash \
+            ${REMOTE_USER}
+
+USER ${REMOTE_USER}
+
+### END:   Setup dev user for rootful docker ###

@@ -1,0 +1,21 @@
+[project]
+name = "savant-cloudpin"
+version = "0.1.0"
+description = "A service to run Savant pipeline remotely (cloud) via WebSockets (WS)"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "omegaconf>=2.3.0",
+]
+
+[project.optional-dependencies]
+prerequisite_platform = [
+  # This is just for visibilty, to track prerequisite packages.
+  # Installing those dependecies isn't supposed to work.
+  "savant-rs",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.0",
+]
