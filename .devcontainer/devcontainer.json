@@ -1,0 +1,35 @@
+{
+  "build": {
+    "dockerfile": "Dockerfile.${localEnv:DOCKER_MODE:default}",
+    "args": {
+      "REMOTE_USER": "${localEnv:USER}",
+      "REMOTE_UID": "${localEnv:REMOTE_UID:1000}",
+      "REMOTE_GID": "${localEnv:REMOTE_GID:1000}"
+    }
+  },
+  "remoteUser": "${localEnv:REMOTE_USER}",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/uv:1": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "containerEnv": {
+    "UV_LINK_MODE": "copy"
+  },
+  "initializeCommand": [
+    "sh",
+    ".devcontainer/detect_rootless.sh"
+  ],
+  "postCreateCommand": "uv venv --system-site-packages --allow-existing; uv sync",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "meta.pyrefly",
+        "charliermarsh.ruff"
+      ],
+      "settings": {
+        "python.terminal.activateEnvInCurrentTerminal": true,
+        "python.defaultInterpreterPath": ".venv/bin/python"
+      }
+    }
+  }
+}
