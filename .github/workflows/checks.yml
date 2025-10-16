@@ -1,0 +1,22 @@
+name: Checks
+run-name: 🔎 ${{ github.actor }} is running checks
+on: [push]
+env:
+  UV_LINK_MODE: copy
+jobs:
+  Checks:
+    runs-on: ubuntu-latest
+    container: ghcr.io/insight-platform/savant-rs-py313:savant-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v5
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v7
+      - name: Install dependencies
+        run: uv pip install --system --group dev --requirements pyproject.toml
+      - name: Run Pyrefly Type Checker
+        run: pyrefly check --summarize-errors
+      - name: Lint code with Ruff
+        run: ruff check --output-format=github
+      - name: Check code formatting with Ruff
+        run: ruff format --diff

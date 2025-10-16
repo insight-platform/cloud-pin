@@ -8,6 +8,14 @@ dependencies = [
     "omegaconf>=2.3.0",
 ]
 
+[tool.pyrefly]
+project-includes = ["**/*"]
+project-excludes = [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/*venv/**/*",
+]
+
 [project.optional-dependencies]
 prerequisite_platform = [
   # This is just for visibilty, to track prerequisite packages.
@@ -17,5 +25,6 @@ prerequisite_platform = [
 
 [dependency-groups]
 dev = [
+    "pyrefly>=0.37.0",
     "ruff>=0.14.0",
 ]

@@ -1,6 +1,7 @@
 # Savant CloudPin Service
 
 [![Open in Dev Containers](https://img.shields.io/static/v1?label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/insight-platform/cloud-pin)
+[![Checks](https://github.com/insight-platform/cloud-pin/actions/workflows/checks.yml/badge.svg?event=push)](https://github.com/insight-platform/cloud-pin/actions/workflows/checks.yml)
 
 A service to run Savant pipeline remotely (cloud) via WebSockets (WS).
 
