@@ -1,4 +1,4 @@
-FROM ghcr.io/insight-platform/savant-rs-py313:v0.5.15 AS dev
+FROM ghcr.io/insight-platform/savant-rs-py313:latest AS dev
 
 ### BEGIN: Setup dev user for rootful docker ###
 
