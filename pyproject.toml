@@ -9,6 +9,7 @@ dependencies = [
 ]
 
 [tool.pyrefly]
+site-package-path = ["savant_cloudpin/", "tests/"]
 project-includes = ["**/*"]
 project-excludes = [
     "**/node_modules",
@@ -25,6 +26,10 @@ prerequisite_platform = [
 
 [dependency-groups]
 dev = [
+    "faker>=37.11.0",
+    "filelock>=3.20.0",
     "pyrefly>=0.37.0",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
     "ruff>=0.14.0",
 ]
