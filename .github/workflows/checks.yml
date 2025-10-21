@@ -6,7 +6,7 @@ env:
 jobs:
   Checks:
     runs-on: ubuntu-latest
-    container: ghcr.io/insight-platform/savant-rs-py313:savant-latest
+    container: ghcr.io/insight-platform/savant-rs-py314:savant-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5

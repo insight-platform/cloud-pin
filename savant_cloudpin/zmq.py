@@ -1,6 +1,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import AbstractContextManager
 from dataclasses import asdict
+from typing import Self
 
 from savant_rs.utils.serialization import Message
 from savant_rs.zmq import (
@@ -64,7 +65,7 @@ class Reader(AbstractContextManager["Reader"]):
     def receive(self) -> ReaderResult:
         return self._reader.receive()
 
-    def __enter__(self) -> "Reader":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *args) -> bool | None:

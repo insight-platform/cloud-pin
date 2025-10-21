@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import AbstractContextManager
+from typing import Self
 
 from savant_rs.zmq import ReaderResultMessage
 
@@ -37,7 +38,7 @@ class ClientService(AbstractContextManager["ClientService"]):
     def stop(self) -> None:
         self.running = False
 
-    def __enter__(self) -> "ClientService":
+    def __enter__(self) -> Self:
         return self
 
     def __exit__(self, *args) -> bool | None:

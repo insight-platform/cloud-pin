@@ -1,7 +1,7 @@
 import re
 from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any
+from typing import Any, Self
 
 from omegaconf import SI, OmegaConf
 from omegaconf.base import SCMode
@@ -20,7 +20,7 @@ class ReaderConfig:
     source_blacklist_size: int | None = None
     source_blacklist_ttl: int | None = None
 
-    def as_router(self) -> "ReaderConfig":
+    def as_router(self) -> Self:
         return replace(self, url="router+" + self.url.split("+")[-1])
 
 
@@ -36,7 +36,7 @@ class WriterConfig:
     receive_hwm: int | None = None
     fix_ipc_permissions: str | None = None
 
-    def as_dealer(self) -> "WriterConfig":
+    def as_dealer(self) -> Self:
         return replace(self, url="dealer+" + self.url.split("+")[-1])
 
 

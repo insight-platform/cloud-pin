@@ -1,1 +1,1 @@
-FROM ghcr.io/insight-platform/savant-rs-py313:savant-latest AS dev
+FROM ghcr.io/insight-platform/savant-rs-py314:savant-latest AS dev
