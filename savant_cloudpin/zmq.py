@@ -14,7 +14,7 @@ from savant_rs.zmq import (
     WriterConfigBuilder,
 )
 
-from savant_cloudpin.cfg import SinkConfig, SourceConfig
+from savant_cloudpin.cfg import ReaderConfig, WriterConfig
 
 type ReaderResult = (
     ReaderResultMessage | ReaderResultTimeout | ReaderResultPrefixMismatch
@@ -22,7 +22,7 @@ type ReaderResult = (
 
 
 class Reader(AbstractContextManager["Reader"]):
-    def __init__(self, config: SourceConfig) -> None:
+    def __init__(self, config: ReaderConfig) -> None:
         cfg = ReaderConfigBuilder(config.url)
         cfg.with_map_config(
             _to_map_config(config, excluded=("url", "results_queue_size"))
@@ -73,7 +73,7 @@ class Reader(AbstractContextManager["Reader"]):
 
 
 class Writer(AbstractContextManager["Writer"]):
-    def __init__(self, config: SinkConfig) -> None:
+    def __init__(self, config: WriterConfig) -> None:
         cfg = WriterConfigBuilder(config.url)
         cfg.with_map_config(
             _to_map_config(config, excluded=("url", "max_infight_messages"))
@@ -107,7 +107,7 @@ class Writer(AbstractContextManager["Writer"]):
 
 
 def _to_map_config(
-    config: SourceConfig | SinkConfig, /, excluded: tuple[str, ...]
+    config: ReaderConfig | WriterConfig, /, excluded: tuple[str, ...]
 ) -> dict[str, str | int]:
     return {
         key: val

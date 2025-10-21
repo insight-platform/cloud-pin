@@ -1,5 +1,5 @@
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -9,7 +9,7 @@ from omegaconf.dictconfig import DictConfig
 
 
 @dataclass
-class SourceConfig:
+class ReaderConfig:
     results_queue_size: int
     url: str
     receive_timeout: int | None = None
@@ -20,9 +20,12 @@ class SourceConfig:
     source_blacklist_size: int | None = None
     source_blacklist_ttl: int | None = None
 
+    def as_router(self) -> "ReaderConfig":
+        return replace(self, url="router+" + self.url.split("+")[-1])
+
 
 @dataclass
-class SinkConfig:
+class WriterConfig:
     max_infight_messages: int
     url: str
     send_timeout: int | None = None
@@ -33,12 +36,15 @@ class SinkConfig:
     receive_hwm: int | None = None
     fix_ipc_permissions: str | None = None
 
+    def as_dealer(self) -> "WriterConfig":
+        return replace(self, url="dealer+" + self.url.split("+")[-1])
+
 
 @dataclass
 class ServiceConfig:
     mode: str
-    source: SourceConfig
-    sink: SinkConfig
+    source: ReaderConfig
+    sink: WriterConfig
 
 
 @dataclass
@@ -46,8 +52,13 @@ class CliServiceConfig(ServiceConfig):
     config: str
 
 
-_URL_ALLOWED_REGEX = r"(bind|connect):(tcp|ipc)://[^: \t\n\r\f\v]+:\d+"
-_DEFAULT_SOURCE_CONFIG = SourceConfig(
+_SOURCE_URL_ALLOWED_REGEX = (
+    r"(router[+])?(bind|connect):(tcp://[^: \t\n\r\f\v]+:\d+|ipc:///.+)"
+)
+_SINK_URL_ALLOWED_REGEX = (
+    r"(dealer[+])?(bind|connect):(tcp://[^: \t\n\r\f\v]+:\d+|ipc:///.+)"
+)
+_DEFAULT_SOURCE_CONFIG = ReaderConfig(
     results_queue_size=SI("${oc.env:CLOUDPIN_SOURCE_RESULTS_QUEUE_SIZE,100}"),
     url="${oc.env:CLOUDPIN_SOURCE_URL,???}",
     receive_timeout=SI("${oc.env:CLOUDPIN_SOURCE_RECEIVE_TIMEOUT,null}"),
@@ -58,7 +69,7 @@ _DEFAULT_SOURCE_CONFIG = SourceConfig(
     source_blacklist_size=SI("${oc.env:CLOUDPIN_SOURCE_SOURCE_BLACKLIST_SIZE,null}"),
     source_blacklist_ttl=SI("${oc.env:CLOUDPIN_SOURCE_SOURCE_BLACKLIST_TTL,null}"),
 )
-_DEFAULT_SINK_CONFIG = SinkConfig(
+_DEFAULT_SINK_CONFIG = WriterConfig(
     max_infight_messages=SI("${oc.env:CLOUDPIN_SINK_MAX_INFIGHT_MESSAGES,100}"),
     url="${oc.env:CLOUDPIN_SINK_URL,???}",
     send_timeout=SI("${oc.env:CLOUDPIN_SINK_SEND_TIMEOUT,null}"),
@@ -90,20 +101,20 @@ def _to_validated(config: Any) -> ServiceConfig:
 
     config = ServiceConfig(
         mode=config["mode"],
-        source=SourceConfig(**config["source"]),
-        sink=SinkConfig(**config["sink"]),
+        source=ReaderConfig(**config["source"]),
+        sink=WriterConfig(**config["sink"]),
     )
     if config.mode not in ("client", "server"):
         raise ValueError(f"Invalid mode '{config.mode}'")
-    if not re.fullmatch(_URL_ALLOWED_REGEX, config.source.url):
+    if not re.fullmatch(_SOURCE_URL_ALLOWED_REGEX, config.source.url):
         raise ValueError(f"Invalid source.url '{config.source.url}'")
-    if not re.fullmatch(_URL_ALLOWED_REGEX, config.sink.url):
+    if not re.fullmatch(_SINK_URL_ALLOWED_REGEX, config.sink.url):
         raise ValueError(f"Invalid sink.url '{config.sink.url}'")
     return config
 
 
-def load_config() -> ServiceConfig:
-    config = OmegaConf.merge({}, _DEFAULT_SERVICE_CONFIG, OmegaConf.from_cli())
+def load_config(args_list: list[str] | None = None) -> ServiceConfig:
+    config = OmegaConf.merge({}, _DEFAULT_SERVICE_CONFIG, OmegaConf.from_cli(args_list))
     assert isinstance(config, DictConfig)
 
     config_file = Path(config["config"]) if "config" in config else None

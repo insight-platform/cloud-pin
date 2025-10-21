@@ -3,14 +3,14 @@ from contextlib import AbstractContextManager
 
 from savant_rs.zmq import ReaderResultMessage
 
-from savant_cloudpin.cfg import SinkConfig, SourceConfig
+from savant_cloudpin.cfg import ReaderConfig, WriterConfig
 from savant_cloudpin.zmq import Reader, Writer
 
 
 class ClientService(AbstractContextManager["ClientService"]):
-    def __init__(self, source: SourceConfig, sink: SinkConfig) -> None:
-        self._source = Reader(source)
-        self._sink = Writer(sink)
+    def __init__(self, source: ReaderConfig, sink: WriterConfig) -> None:
+        self._source = Reader(source.as_router())
+        self._sink = Writer(sink.as_dealer())
         self.running = False
 
     async def _loop(self) -> None:
