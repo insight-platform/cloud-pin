@@ -3,14 +3,18 @@ from collections.abc import AsyncGenerator
 from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from pathlib import Path
 
-
-from filelock import FileLock, Timeout
+from filelock import BaseFileLock, FileLock, Timeout
 
 MIN_PORT = 15000
 MAX_PORT = 15031
 LOCK_RESERVE_STEP = 10
 LOCK_DIR = Path(".cache/PortPool")
 PORT_LEASE_DELAY = 0.5
+
+
+async def _release_filelock(lock: BaseFileLock) -> None:
+    await asyncio.sleep(PORT_LEASE_DELAY)
+    lock.release()
 
 
 class PortPool:
@@ -32,9 +36,11 @@ class PortPool:
             filelock = FileLock(LOCK_DIR / f"{port}.lock", blocking=False)
             try:
                 with filelock as lock:
-                    with lock.acquire(timeout=0):
+                    try:
+                        lock.acquire(timeout=0)
                         yield port
-                        await asyncio.sleep(PORT_LEASE_DELAY)
+                    finally:
+                        asyncio.create_task(_release_filelock(lock))
                 break
             except Timeout:
                 continue

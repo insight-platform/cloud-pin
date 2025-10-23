@@ -1,5 +1,24 @@
 from savant_cloudpin.cfg import load_config
 import pytest
+from faker import Faker
+
+
+fake = Faker()
+
+DUMMY_WEBSOCKET_CLI_CONFIG = [
+    "websockets.server_url=wss://localhost",
+    "websockets.api_key=secret_key",
+]
+
+
+@pytest.fixture
+def dummy_websocket_server_cli_config() -> list[str]:
+    return [
+        r"mode=server",
+        f"websockets.server_url={fake.uri(['wss', 'ws'])}",
+        f"websockets.api_key={fake.passport_number()}",
+        r"websockets.disable_ssl=true",
+    ]
 
 
 @pytest.fixture(
@@ -34,14 +53,30 @@ def invalid_urls(request: pytest.FixtureRequest) -> tuple[str, str]:
     return request.param
 
 
-def test_load_config_when_valid_urls(valid_urls: tuple[str, str]) -> None:
+def test_load_config_when_valid_urls(
+    dummy_websocket_server_cli_config: list[str], valid_urls: tuple[str, str]
+) -> None:
     source_url, sink_url = valid_urls
 
-    load_config([f"source.url={source_url}", f"sink.url={sink_url}"])
+    load_config(
+        [
+            *dummy_websocket_server_cli_config,
+            f"source.url={source_url}",
+            f"sink.url={sink_url}",
+        ]
+    )
 
 
-def test_load_config_when_invalid_urls(invalid_urls: tuple[str, str]) -> None:
+def test_load_config_when_invalid_urls(
+    dummy_websocket_server_cli_config: list[str], invalid_urls: tuple[str, str]
+) -> None:
     source_url, sink_url = invalid_urls
 
     with pytest.raises(ValueError):
-        load_config([f"source.url={source_url}", f"sink.url={sink_url}"])
+        load_config(
+            [
+                *dummy_websocket_server_cli_config,
+                f"source.url={source_url}",
+                f"sink.url={sink_url}",
+            ]
+        )
