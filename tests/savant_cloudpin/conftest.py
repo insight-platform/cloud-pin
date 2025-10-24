@@ -7,15 +7,16 @@ import pytest_asyncio
 from faker import Faker
 from savant_rs.zmq import ReaderConfigBuilder, WriterConfigBuilder
 
-from savant_cloudpin.cfg import ReaderConfig, WriterConfig
-from savant_cloudpin.cfg._models import (
+from savant_cloudpin.cfg import (
     ClientServiceConfig,
     ClientSSLConfig,
     ClientWSConfig,
+    ReaderConfig,
     ServerServiceConfig,
     ServerSSLConfig,
     ServerWSConfig,
     SSLCertConfig,
+    WriterConfig,
 )
 from savant_cloudpin.services import ClientService, ServerService
 from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter

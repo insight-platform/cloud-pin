@@ -66,6 +66,9 @@ class ClientService(ServiceBase["ClientService"]):
                     ssl_context=self._ssl_context,
                     extra_headers={API_KEY_HEADER: self._api_key},
                 )
+            except ConnectionRefusedError, ConnectionResetError:
+                await asyncio.sleep(self._io_timeout)
+                return None
             except WSError as orig_err:
                 err = ConnectionError("Error connecting upstream. Maybe auth problems")
                 raise err from orig_err
@@ -92,6 +95,9 @@ class ClientService(ServiceBase["ClientService"]):
                 ssl_context=self._ssl_context,
                 extra_headers={API_KEY_HEADER: self._api_key},
             )
+        except ConnectionRefusedError, ConnectionResetError:
+            await asyncio.sleep(self._io_timeout)
+            return
         except WSError as orig_err:
             err = ConnectionError("Error connecting downstream. Maybe auth problems")
             raise err from orig_err

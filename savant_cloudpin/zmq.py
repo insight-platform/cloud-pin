@@ -28,6 +28,9 @@ class NonBlockingReader(AbstractContextManager["NonBlockingReader"]):
     def is_started(self) -> bool:
         return self._reader.is_started()
 
+    def is_shutdown(self) -> bool:
+        return self._reader.is_shutdown()
+
     def start(self) -> None:
         return self._reader.start()
 
