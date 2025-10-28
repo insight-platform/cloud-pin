@@ -7,7 +7,6 @@ from savant_cloudpin.cfg._models import (
     ServerServiceConfig,
     ServerSSLConfig,
     ServerWSConfig,
-    SSLCertConfig,
     WriterConfig,
 )
 
@@ -20,6 +19,5 @@ __all__ = [
     "ServerServiceConfig",
     "ServerSSLConfig",
     "ServerWSConfig",
-    "SSLCertConfig",
     "WriterConfig",
 ]

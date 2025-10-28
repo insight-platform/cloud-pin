@@ -44,17 +44,12 @@ class ClientService(ServiceBase["ClientService"]):
     @cached_property
     def _ssl_context(self) -> SSLContext | None:
         ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-        ctx.load_verify_locations(self._ssl.server.certificate_path)
+        ctx.load_verify_locations(self._ssl.ca_file)
         ctx.check_hostname = self._ssl.check_hostname
         ctx.hostname_checks_common_name = self._ssl.check_hostname
 
-        if not self._ssl.disable_client_auth:
-            if not self._ssl.client:
-                raise ValueError("Missing client certificate path")
-
-            ctx.load_cert_chain(
-                self._ssl.client.certificate_path, self._ssl.client.private_key_path
-            )
+        if self._ssl.cert_file and self._ssl.key_file:
+            ctx.load_cert_chain(self._ssl.cert_file, self._ssl.key_file)
         return ctx
 
     async def _wait_active_upstream(self) -> WSTransport | None:
@@ -69,6 +64,10 @@ class ClientService(ServiceBase["ClientService"]):
             except ConnectionRefusedError, ConnectionResetError:
                 await asyncio.sleep(self._io_timeout)
                 return None
+            except ssl.SSLCertVerificationError as orig_err:
+                raise ConnectionError(
+                    "Error connecting upstream. Certificate verify failed"
+                ) from orig_err
             except WSError as orig_err:
                 err = ConnectionError("Error connecting upstream. Maybe auth problems")
                 raise err from orig_err
@@ -98,6 +97,10 @@ class ClientService(ServiceBase["ClientService"]):
         except ConnectionRefusedError, ConnectionResetError:
             await asyncio.sleep(self._io_timeout)
             return
+        except ssl.SSLCertVerificationError as orig_err:
+            raise ConnectionError(
+                "Error connecting downstream. Certificate verify failed"
+            ) from orig_err
         except WSError as orig_err:
             err = ConnectionError("Error connecting downstream. Maybe auth problems")
             raise err from orig_err

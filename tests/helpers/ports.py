@@ -1,24 +1,38 @@
-import asyncio
-from collections.abc import AsyncGenerator
-from contextlib import AbstractAsyncContextManager, asynccontextmanager
+import time
+from collections import deque
+from collections.abc import Generator
+from contextlib import AbstractContextManager, contextmanager
 from pathlib import Path
+from threading import Thread
+from typing import override
 
 from filelock import BaseFileLock, FileLock, Timeout
 
 MIN_PORT = 15000
-MAX_PORT = 15031
-LOCK_RESERVE_STEP = 10
+MAX_PORT = 15255
 LOCK_DIR = Path(".cache/PortPool")
 PORT_LEASE_DELAY = 0.5
 
 
-async def _release_filelock(lock: BaseFileLock) -> None:
-    await asyncio.sleep(PORT_LEASE_DELAY)
-    lock.release()
+class PortPool(AbstractContextManager["PortPool"]):
+    def __init__(self) -> None:
+        self._locks = deque[BaseFileLock]()
+        self._stopped = False
+        self._thread = Thread(target=self._release_loop)
+        self._thread.start()
 
+    def _release_loop(self) -> None:
+        while not self._stopped:
+            expired_locks = deque[BaseFileLock]()
+            while self._locks:
+                expired_locks.append(self._locks.pop())
 
-class PortPool:
-    def _reserve_filelocks(self) -> None:
+            time.sleep(PORT_LEASE_DELAY)
+
+            while expired_locks:
+                expired_locks.pop().release()
+
+    def reserve_filelocks(self) -> None:
         file_ports = {
             int(file.name.removesuffix(".lock")) for file in LOCK_DIR.glob("*.lock")
         }
@@ -27,23 +41,28 @@ class PortPool:
                 with FileLock(LOCK_DIR / f"{port}.lock", blocking=False):
                     pass
 
-    @asynccontextmanager
-    async def _create_port_lease(self) -> AsyncGenerator[int]:
+    @contextmanager
+    def _create_port_lease(self) -> Generator[int]:
         LOCK_DIR.mkdir(parents=True, exist_ok=True)
-        self._reserve_filelocks()
+        self.reserve_filelocks()
 
         for port in range(MIN_PORT, MAX_PORT + 1):
-            filelock = FileLock(LOCK_DIR / f"{port}.lock", blocking=False)
+            filelock = FileLock(LOCK_DIR / f"{port}.lock")
+            if filelock.is_locked:
+                continue
             try:
-                with filelock as lock:
-                    try:
-                        lock.acquire(timeout=0)
-                        yield port
-                    finally:
-                        asyncio.create_task(_release_filelock(lock))
+                filelock.acquire(timeout=0.00001)
+                yield port
+                self._locks.append(filelock)
                 break
             except Timeout:
                 continue
 
-    def lease(self) -> AbstractAsyncContextManager[int]:
+    def lease(self) -> AbstractContextManager[int]:
         return self._create_port_lease()
+
+    @override
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._stopped = True
+        self._thread.join()
+        return None

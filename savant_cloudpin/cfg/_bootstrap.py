@@ -1,3 +1,4 @@
+import dataclasses
 import re
 from pathlib import Path
 from typing import Any
@@ -10,19 +11,9 @@ from savant_cloudpin.cfg._defaults import (
     DEFAULT_CLIENT_CONFIG,
     DEFAULT_LOAD_CONFIG,
     DEFAULT_SERVER_CONFIG,
+    NULL_SSL_SERVER_CONFIG,
 )
-from savant_cloudpin.cfg._models import (
-    ClientServiceConfig,
-    ClientSSLConfig,
-    ClientWSConfig,
-    ReaderConfig,
-    ServerServiceConfig,
-    ServerSSLConfig,
-    ServerWSConfig,
-    SSLCertConfig,
-    SSLCertKeyConfig,
-    WriterConfig,
-)
+from savant_cloudpin.cfg._models import ClientServiceConfig, ServerServiceConfig
 
 SOURCE_URL_ALLOWED_REGEX = (
     r"(router[+])?(bind|connect):(tcp://[^: \t\n\r\f\v]+:\d+|ipc:///.+)"
@@ -38,29 +29,11 @@ def validated_dataclass[T: ClientServiceConfig | ServerServiceConfig](
     config = OmegaConf.to_container(
         config,
         throw_on_missing=True,
-        structured_config_mode=SCMode.DICT_CONFIG,
+        structured_config_mode=SCMode.INSTANTIATE,
         resolve=True,
     )
-    assert isinstance(config, DictConfig)
+    assert isinstance(config, service_cls)
 
-    ssl_config = config.websockets.ssl
-    if service_cls == ServerServiceConfig:
-        ssl_config.server = SSLCertKeyConfig(**ssl_config.server)
-        ssl_config.client = SSLCertConfig(**ssl_config.client)
-        config.websockets.ssl = ServerSSLConfig(**ssl_config)
-        ws_config = ServerWSConfig(**config.websockets)
-    else:
-        ssl_config.server = SSLCertConfig(**ssl_config.server)
-        ssl_config.client = SSLCertKeyConfig(**ssl_config.client)
-        config.websockets.ssl = ClientSSLConfig(**ssl_config)
-        ws_config = ClientWSConfig(**config.websockets)
-
-    config = service_cls(
-        websockets=ws_config,
-        io_timeout=config.io_timeout,
-        source=ReaderConfig(**config.source),
-        sink=WriterConfig(**config.sink),
-    )
     if not re.fullmatch(SOURCE_URL_ALLOWED_REGEX, config.source.url):
         raise ValueError(f"Invalid source.url '{config.source.url}'")
     if not re.fullmatch(SINK_URL_ALLOWED_REGEX, config.sink.url):
@@ -79,20 +52,24 @@ def load_config(
     else:
         yaml_config = OmegaConf.create()
 
-    assert isinstance(yaml_config, DictConfig)
+    config = OmegaConf.merge(DEFAULT_LOAD_CONFIG, yaml_config, cli_config)
+    assert isinstance(config, DictConfig)
 
-    load_config = OmegaConf.merge(DEFAULT_LOAD_CONFIG, yaml_config, cli_config)
-
-    cli_config.pop("config", None)
-    cli_config.pop("mode", None)
-    yaml_config.pop("mode", None)
-
-    match load_config.mode:
+    config.pop("config", None)
+    match config.pop("mode", None):
         case "server":
-            config = OmegaConf.merge(DEFAULT_SERVER_CONFIG, yaml_config, cli_config)
+            ssl_config = OmegaConf.merge(
+                dataclasses.asdict(NULL_SSL_SERVER_CONFIG), config
+            ).websockets.ssl
+            assert isinstance(ssl_config, DictConfig)
+            missing_ssl = all(v is None for _, v in ssl_config.items())
+
+            config = OmegaConf.merge(DEFAULT_SERVER_CONFIG, config)
+            if missing_ssl:
+                config.websockets.ssl = None
             return validated_dataclass(config, ServerServiceConfig)
         case "client" | None:
-            config = OmegaConf.merge(DEFAULT_CLIENT_CONFIG, yaml_config, cli_config)
+            config = OmegaConf.merge(DEFAULT_CLIENT_CONFIG, config)
             return validated_dataclass(config, ClientServiceConfig)
         case _:
             raise ValueError("Invalid service mode")

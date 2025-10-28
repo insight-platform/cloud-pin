@@ -54,28 +54,18 @@ class WriterConfig:
 
 
 @dataclass
-class SSLCertConfig:
-    certificate_path: str
-
-
-@dataclass
-class SSLCertKeyConfig:
-    certificate_path: str
-    private_key_path: str
-
-
-@dataclass
 class ServerSSLConfig:
-    server: SSLCertKeyConfig
-    client: SSLCertConfig | None
-    disable_client_auth: bool
+    ca_file: str | None
+    cert_file: str
+    key_file: str
+    client_cert_required: bool
 
 
 @dataclass
 class ClientSSLConfig:
-    server: SSLCertConfig
-    client: SSLCertKeyConfig | None
-    disable_client_auth: bool
+    ca_file: str | None
+    cert_file: str | None
+    key_file: str | None
     check_hostname: bool
 
 
@@ -83,7 +73,6 @@ class ClientSSLConfig:
 class ServerWSConfig:
     server_url: str
     api_key: str
-    disable_ssl: bool
     ssl: ServerSSLConfig | None
 
 

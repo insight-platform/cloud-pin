@@ -19,10 +19,7 @@ from savant_cloudpin.services._protocol import API_KEY_HEADER
 class ServerService(ServiceBase["ServerService"]):
     def __init__(self, config: ServerServiceConfig) -> None:
         super().__init__()
-        if not config.websockets.disable_ssl and not config.websockets.ssl:
-            raise ValueError("Missing SSL config")
-
-        default_port = "80" if config.websockets.disable_ssl else "443"
+        default_port = "443" if config.websockets.ssl else "80"
         ws_url = config.websockets.server_url
         netloc = urlparse(ws_url).netloc.split(":")
 
@@ -63,15 +60,10 @@ class ServerService(ServiceBase["ServerService"]):
             return None
 
         ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        ctx.load_cert_chain(
-            self._ssl.server.certificate_path, self._ssl.server.private_key_path
-        )
-        if not self._ssl.disable_client_auth:
-            if not self._ssl.client:
-                raise ValueError("Missing client certificate path")
-
+        ctx.load_cert_chain(self._ssl.cert_file, self._ssl.key_file)
+        if self._ssl.client_cert_required:
             ctx.verify_mode = ssl.VerifyMode.CERT_REQUIRED
-            ctx.load_verify_locations(cafile=self._ssl.client.certificate_path)
+            ctx.load_verify_locations(cafile=self._ssl.ca_file)
         return ctx
 
     async def _loop(self) -> None:
@@ -85,6 +77,7 @@ class ServerService(ServiceBase["ServerService"]):
 
     @override
     async def _serve(self) -> None:
+        server = None
         try:
             server = await ws_create_server(
                 ws_listener_factory=self._listener_factory,
@@ -97,6 +90,8 @@ class ServerService(ServiceBase["ServerService"]):
 
             await self._loop()
         finally:
+            if not server:
+                return
             server.close_clients()
             server.close()
             await server.wait_closed()

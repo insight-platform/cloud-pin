@@ -1,4 +1,6 @@
-from omegaconf import SI, OmegaConf
+import copy
+
+from omegaconf import SI
 
 from savant_cloudpin.cfg._models import (
     ClientServiceConfig,
@@ -9,8 +11,6 @@ from savant_cloudpin.cfg._models import (
     ServerServiceConfig,
     ServerSSLConfig,
     ServerWSConfig,
-    SSLCertConfig,
-    SSLCertKeyConfig,
     WriterConfig,
 )
 
@@ -48,47 +48,41 @@ DEFAULT_CLIENT_CONFIG = ClientServiceConfig(
         server_url="${oc.env:CLOUDPIN_WEBSOCKETS_SERVER_URL,???}",
         api_key="${oc.env:CLOUDPIN_WEBSOCKETS_API_KEY,???}",
         ssl=ClientSSLConfig(
-            server=SSLCertConfig(
-                certificate_path="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_SERVER_CERTIFICATE_PATH,???}",
-            ),
-            client=SSLCertKeyConfig(
-                certificate_path="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CLIENT_CERTIFICATE_PATH,???}",
-                private_key_path="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CLIENT_PRIVATE_KEY_PATH,???}",
-            ),
-            disable_client_auth=SI(
-                "${oc.env:CLOUDPIN_WEBSOCKETS_SSL_DISABLE_CLIENT_AUTH,false}"
-            ),
-            check_hostname=SI("${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CHECK_HOSTNAME,true}"),
+            ca_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CA_FILE,null}",
+            cert_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CERT_FILE,???}",
+            key_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_KEY_FILE,???}",
+            check_hostname=SI("${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CHECK_HOSTNAME,false}"),
         ),
     ),
     io_timeout=SI("${oc.env:CLOUDPIN_IO_TIMEOUT,0.1}"),
-    source=OmegaConf.structured(
-        DEFAULT_SOURCE_CONFIG, flags={"throw_on_missing": True}
-    ),
-    sink=OmegaConf.structured(DEFAULT_SINK_CONFIG, flags={"throw_on_missing": True}),
+    source=DEFAULT_SOURCE_CONFIG,
+    sink=DEFAULT_SINK_CONFIG,
 )
 
 DEFAULT_SERVER_CONFIG = ServerServiceConfig(
     websockets=ServerWSConfig(
         server_url="${oc.env:CLOUDPIN_WEBSOCKETS_SERVER_URL,???}",
         api_key="${oc.env:CLOUDPIN_WEBSOCKETS_API_KEY,???}",
-        disable_ssl=SI("${oc.env:CLOUDPIN_WEBSOCKETS_DISABLE_SSL,false}"),
         ssl=ServerSSLConfig(
-            server=SSLCertKeyConfig(
-                certificate_path="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_SERVER_CERTIFICATE_PATH,???}",
-                private_key_path="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_SERVER_PRIVATE_KEY_PATH,???}",
-            ),
-            client=SSLCertConfig(
-                certificate_path="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CLIENT_CERTIFICATE_PATH,???}",
-            ),
-            disable_client_auth=SI(
-                "${oc.env:CLOUDPIN_WEBSOCKETS_SSL_DISABLE_CLIENT_AUTH,false}"
+            ca_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CA_FILE,null}",
+            cert_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CERT_FILE,???}",
+            key_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_KEY_FILE,???}",
+            client_cert_required=SI(
+                "${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CLIENT_CERT_REQUIRED,true}"
             ),
         ),
     ),
     io_timeout=SI("${oc.env:CLOUDPIN_IO_TIMEOUT,0.1}"),
-    source=OmegaConf.structured(
-        DEFAULT_SOURCE_CONFIG, flags={"throw_on_missing": True}
+    source=DEFAULT_SOURCE_CONFIG,
+    sink=DEFAULT_SINK_CONFIG,
+)
+
+NULL_SSL_SERVER_CONFIG = copy.deepcopy(DEFAULT_SERVER_CONFIG)
+NULL_SSL_SERVER_CONFIG.websockets.ssl = ServerSSLConfig(
+    ca_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CA_FILE,null}",
+    cert_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CERT_FILE,null}",
+    key_file="${oc.env:CLOUDPIN_WEBSOCKETS_SSL_KEY_FILE,null}",
+    client_cert_required=SI(
+        "${oc.env:CLOUDPIN_WEBSOCKETS_SSL_CLIENT_CERT_REQUIRED,null}"
     ),
-    sink=OmegaConf.structured(DEFAULT_SINK_CONFIG, flags={"throw_on_missing": True}),
 )

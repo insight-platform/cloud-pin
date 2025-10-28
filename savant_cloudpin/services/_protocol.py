@@ -8,8 +8,8 @@ from savant_rs.utils.serialization import Message
 
 UPSTREAM_PATH = "upstream"
 DOWNSTREAM_PATH = "downsteam"
-FRAME_HEAD_SIZE = 12
-FRAME_HEAD_FORMAT = Struct("<lll")
+FRAME_HEAD_SIZE = 8
+FRAME_HEAD_FORMAT = Struct("<ll")
 API_KEY_HEADER = "x-api-key"
 
 
@@ -49,18 +49,20 @@ class FrameData(NamedTuple):
 def pack_stream_frame(topic: bytes, message: Message, extra: bytes | None) -> bytes:
     body = serialization.save_message_to_bytes(message)
     extra = extra or b""
-    head = FRAME_HEAD_FORMAT.pack(len(topic), len(body), len(extra))
+    head = FRAME_HEAD_FORMAT.pack(len(topic), len(body))
     return b"".join([head, topic, body, extra])
 
 
 def unpack_stream_frame(frame: WSFrame) -> FrameData:
     payload = frame.get_payload_as_bytes()
-    topic_size, body_size, extra_size = FRAME_HEAD_FORMAT.unpack_from(payload)
-    start, end = FRAME_HEAD_SIZE, FRAME_HEAD_SIZE + topic_size
-    topic = payload[start:end]
-    start, end = end, end + body_size
-    body = payload[start:end]
-    start, end = end, end + extra_size
-    extra = payload[start:end]
+    topic_size, body_size = FRAME_HEAD_FORMAT.unpack_from(payload)
+    topic_idx = FRAME_HEAD_SIZE
+    body_idx = topic_idx + topic_size
+    extra_idx = body_idx + body_size
+
+    topic = payload[topic_idx:body_idx]
+    body = payload[body_idx:extra_idx]
+    extra = payload[extra_idx:]
+
     msg = serialization.load_message_from_bytes(body)
     return FrameData(topic, msg, extra)

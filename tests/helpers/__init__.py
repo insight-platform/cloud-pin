@@ -1,3 +1,3 @@
-from tests.helpers import zmq
+from tests.helpers import ssl, zmq
 
-__all__ = ["zmq"]
+__all__ = ["ssl", "zmq"]
