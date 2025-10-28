@@ -20,6 +20,8 @@ jobs:
         run: pyrefly check --summarize-errors .
       - name: Lint code with Ruff
         run: ruff check --output-format=github
+      - name: Check sorted imports with Ruff
+        run: ruff check --select I --output-format=github
       - name: Check code formatting with Ruff
         run: ruff format --diff
       - name: Run pytest unit/integration tests

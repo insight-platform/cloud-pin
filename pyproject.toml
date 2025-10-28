@@ -18,6 +18,10 @@ project-excludes = [
     "**/*venv/**/*",
 ]
 
+[tool.pytest.ini_options]
+addopts = "-n 8"
+
+
 [project.optional-dependencies]
 prerequisite_platform = [
   # This is just for visibilty, to track prerequisite packages.
@@ -29,8 +33,10 @@ prerequisite_platform = [
 dev = [
     "faker>=37.11.0",
     "filelock>=3.20.0",
-    "pyrefly>=0.37.0",
+    "pyrefly>=0.39.0",
     "pytest>=8.4.2",
     "pytest-asyncio>=1.2.0",
+    "pytest-randomly>=4.0.1",
+    "pytest-xdist>=3.8.0",
     "ruff>=0.14.1",
 ]

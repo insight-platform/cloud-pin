@@ -2,7 +2,6 @@ from struct import Struct
 from typing import NamedTuple
 from urllib.parse import ParseResult, urljoin, urlparse, urlunparse
 
-from picows import WSFrame
 from savant_rs.utils import serialization
 from savant_rs.utils.serialization import Message
 
@@ -53,8 +52,7 @@ def pack_stream_frame(topic: bytes, message: Message, extra: bytes | None) -> by
     return b"".join([head, topic, body, extra])
 
 
-def unpack_stream_frame(frame: WSFrame) -> FrameData:
-    payload = frame.get_payload_as_bytes()
+def unpack_stream_frame(payload: bytes) -> FrameData:
     topic_size, body_size = FRAME_HEAD_FORMAT.unpack_from(payload)
     topic_idx = FRAME_HEAD_SIZE
     body_idx = topic_idx + topic_size

@@ -38,8 +38,11 @@ class PortPool(AbstractContextManager["PortPool"]):
         }
         for port in range(MIN_PORT, MAX_PORT + 1):
             if port not in file_ports:
-                with FileLock(LOCK_DIR / f"{port}.lock", blocking=False):
-                    pass
+                try:
+                    with FileLock(LOCK_DIR / f"{port}.lock", blocking=False):
+                        pass
+                except Timeout:
+                    continue
 
     @contextmanager
     def _create_port_lease(self) -> Generator[int]:

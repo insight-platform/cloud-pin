@@ -1,17 +1,16 @@
-import dataclasses
+import os.path
 import re
-from pathlib import Path
 from typing import Any
 
 from omegaconf import OmegaConf
 from omegaconf.base import SCMode
 from omegaconf.dictconfig import DictConfig
 
+from savant_cloudpin.cfg import _utils as utils
 from savant_cloudpin.cfg._defaults import (
     DEFAULT_CLIENT_CONFIG,
     DEFAULT_LOAD_CONFIG,
     DEFAULT_SERVER_CONFIG,
-    NULL_SSL_SERVER_CONFIG,
 )
 from savant_cloudpin.cfg._models import ClientServiceConfig, ServerServiceConfig
 
@@ -41,35 +40,51 @@ def validated_dataclass[T: ClientServiceConfig | ServerServiceConfig](
     return config
 
 
+def merge_env_config(
+    defaults: ServerServiceConfig | ClientServiceConfig,
+    yml_cfg: DictConfig | dict,
+    cli_cfg: DictConfig | dict,
+) -> DictConfig:
+    default_cfg = OmegaConf.structured(defaults)
+    env_cfg = utils.as_value_dict(utils.env_override(defaults, "null"))
+    env_cfg = OmegaConf.to_container(OmegaConf.create(env_cfg), resolve=True)
+    assert isinstance(env_cfg, dict)
+    env_cfg = utils.drop_none_values(env_cfg)
+    cfg = OmegaConf.merge(yml_cfg, env_cfg, cli_cfg)
+
+    ssl = "websockets" in cfg and "ssl" in cfg.websockets
+    ssl = cfg.websockets.ssl if ssl else {}
+
+    cfg = OmegaConf.merge(default_cfg, cfg)
+    assert isinstance(cfg, DictConfig)
+    if not any(val is not None for val in ssl.values()):
+        cfg.websockets.ssl = None
+    return cfg
+
+
 def load_config(
     args_list: list[str] | None = None,
 ) -> ClientServiceConfig | ServerServiceConfig:
-    cli_config = OmegaConf.from_cli(args_list)
-    load_config = OmegaConf.merge(DEFAULT_LOAD_CONFIG, cli_config)
+    cli_cfg = OmegaConf.from_cli(args_list)
+    env_cfg = utils.as_value_dict(utils.env_override(DEFAULT_LOAD_CONFIG))
+    cfg = OmegaConf.merge(env_cfg, cli_cfg)
 
-    if load_config.config and Path(load_config.config).exists():
-        yaml_config = OmegaConf.load(load_config.config)
-    else:
-        yaml_config = OmegaConf.create()
+    yml_exists = cfg.config and os.path.exists(cfg.config)
+    yml_cfg = OmegaConf.load(cfg.config) if yml_exists else OmegaConf.create({})
 
-    config = OmegaConf.merge(DEFAULT_LOAD_CONFIG, yaml_config, cli_config)
-    assert isinstance(config, DictConfig)
+    cfg = OmegaConf.merge(yml_cfg, env_cfg, cli_cfg)
+    assert isinstance(cfg, DictConfig) and isinstance(yml_cfg, DictConfig)
 
-    config.pop("config", None)
-    match config.pop("mode", None):
+    cli_cfg.pop("config", None)
+    cli_cfg.pop("mode", None)
+    yml_cfg.pop("mode", None)
+
+    match cfg.mode:
         case "server":
-            ssl_config = OmegaConf.merge(
-                dataclasses.asdict(NULL_SSL_SERVER_CONFIG), config
-            ).websockets.ssl
-            assert isinstance(ssl_config, DictConfig)
-            missing_ssl = all(v is None for _, v in ssl_config.items())
-
-            config = OmegaConf.merge(DEFAULT_SERVER_CONFIG, config)
-            if missing_ssl:
-                config.websockets.ssl = None
-            return validated_dataclass(config, ServerServiceConfig)
+            cfg = merge_env_config(DEFAULT_SERVER_CONFIG, yml_cfg, cli_cfg)
+            return validated_dataclass(cfg, ServerServiceConfig)
         case "client" | None:
-            config = OmegaConf.merge(DEFAULT_CLIENT_CONFIG, config)
-            return validated_dataclass(config, ClientServiceConfig)
+            cfg = merge_env_config(DEFAULT_CLIENT_CONFIG, yml_cfg, cli_cfg)
+            return validated_dataclass(cfg, ClientServiceConfig)
         case _:
             raise ValueError("Invalid service mode")
