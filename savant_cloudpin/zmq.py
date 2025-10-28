@@ -1,37 +1,35 @@
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import AbstractContextManager
-from dataclasses import asdict
+from typing import override
 
+from savant_rs import zmq
 from savant_rs.utils.serialization import Message
 from savant_rs.zmq import (
-    NonBlockingReader,
-    NonBlockingWriter,
-    ReaderConfigBuilder,
     ReaderResultMessage,
     ReaderResultPrefixMismatch,
     ReaderResultTimeout,
     WriteOperationResult,
-    WriterConfigBuilder,
 )
 
-from savant_cloudpin.cfg import ReaderConfig, WriterConfig
+__all__ = ["ReaderResult", "NonBlockingReader", "NonBlockingWriter"]
 
 type ReaderResult = (
     ReaderResultMessage | ReaderResultTimeout | ReaderResultPrefixMismatch
 )
 
 
-class Reader(AbstractContextManager["Reader"]):
-    def __init__(self, config: ReaderConfig) -> None:
-        cfg = ReaderConfigBuilder(config.url)
-        cfg.with_map_config(
-            _to_map_config(config, excluded=("url", "results_queue_size"))
-        )
-        self._reader = NonBlockingReader(cfg.build(), config.results_queue_size)
-        self._queue_size = config.results_queue_size
+class NonBlockingReader(AbstractContextManager["NonBlockingReader"]):
+    def __init__(self, config: zmq.ReaderConfig, results_queue_size: int) -> None:
+        self._reader = zmq.NonBlockingReader(config, results_queue_size)
 
     def is_empty(self) -> bool:
         return self._reader.enqueued_results() == 0
+
+    def is_started(self) -> bool:
+        return self._reader.is_started()
+
+    def is_shutdown(self) -> bool:
+        return self._reader.is_shutdown()
 
     def start(self) -> None:
         return self._reader.start()
@@ -45,9 +43,6 @@ class Reader(AbstractContextManager["Reader"]):
             pass
 
     def shutdown(self) -> None:
-        if not self._reader.is_started() or self._reader.is_shutdown():
-            return
-
         # workaround to avoid blocking by savant-rs internal channel
         with ThreadPoolExecutor(max_workers=1) as ex:
             cancellation = ex.submit(self._shutdown_safe)
@@ -64,34 +59,30 @@ class Reader(AbstractContextManager["Reader"]):
     def receive(self) -> ReaderResult:
         return self._reader.receive()
 
-    def __enter__(self) -> "Reader":
-        return self
-
+    @override
     def __exit__(self, *args) -> bool | None:
         self.shutdown()
         return None
 
 
-class Writer(AbstractContextManager["Writer"]):
-    def __init__(self, config: WriterConfig) -> None:
-        cfg = WriterConfigBuilder(config.url)
-        cfg.with_map_config(
-            _to_map_config(config, excluded=("url", "max_infight_messages"))
-        )
-        self._writer = NonBlockingWriter(cfg.build(), config.max_infight_messages)
-        self._queue_size = config.max_infight_messages
+class NonBlockingWriter(AbstractContextManager["NonBlockingWriter"]):
+    def __init__(self, config: zmq.WriterConfig, max_inflight_messages: int) -> None:
+        self._writer = zmq.NonBlockingWriter(config, max_inflight_messages)
+        self._queue_size = max_inflight_messages
 
     def has_capacity(self) -> bool:
         return self._writer.inflight_messages() < self._queue_size
+
+    def is_started(self) -> bool:
+        return self._writer.is_started()
 
     def start(self) -> None:
         return self._writer.start()
 
     def shutdown(self) -> None:
-        if self._writer.is_started() and not self._writer.is_shutdown():
-            self._writer.shutdown()
+        self._writer.shutdown()
 
-    def send(
+    def send_message(
         self, topic: bytes, message: Message, extra_data: bytes | None = None
     ) -> WriteOperationResult:
         return self._writer.send_message(topic.decode(), message, extra_data or b"")  # type: ignore
@@ -99,19 +90,6 @@ class Writer(AbstractContextManager["Writer"]):
     def send_eos(self, topic: bytes) -> WriteOperationResult:
         return self._writer.send_eos(topic.decode())
 
-    def __enter__(self) -> "Writer":
-        return self
-
+    @override
     def __exit__(self, *args) -> bool | None:
         self.shutdown()
-
-
-def _to_map_config(
-    config: ReaderConfig | WriterConfig, /, excluded: tuple[str, ...]
-) -> dict[str, str | int]:
-    return {
-        key: val
-        for key, val in asdict(config).items()
-        if isinstance(key, str) and isinstance(val, (str, int))
-        if key not in excluded
-    }

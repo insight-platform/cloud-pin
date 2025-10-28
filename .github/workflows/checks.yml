@@ -6,10 +6,12 @@ env:
 jobs:
   Checks:
     runs-on: ubuntu-latest
-    container: ghcr.io/insight-platform/savant-rs-py313:savant-latest
+    container: ghcr.io/insight-platform/savant-rs-py314:savant-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v5
+      - name: Install build-essential
+        run: apt-get update && apt-get install -y build-essential
       - name: Install the latest version of uv
         uses: astral-sh/setup-uv@v7
       - name: Install dependencies
