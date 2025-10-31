@@ -100,8 +100,7 @@ async def nossl_client(
 ) -> AsyncGenerator[ClientService]:
     async with ClientService(client_config) as service:
         service._ssl_context = None
-        service._upstream_url = service._upstream_url.replace("wss://", "ws://")
-        service._downstream_url = service._downstream_url.replace("wss://", "ws://")
+        service._server_url = service._server_url.replace("wss://", "ws://")
         yield service
 
 

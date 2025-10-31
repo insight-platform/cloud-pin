@@ -13,7 +13,7 @@ from savant_rs.zmq import ReaderResultMessage
 
 from savant_cloudpin.cfg import ServerServiceConfig
 from savant_cloudpin.services import ClientService, ServerService
-from savant_cloudpin.services._pumps._outbound import OutboundWSListener
+from savant_cloudpin.services._base import ServiceConnection
 from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter, ReaderResult
 from tests import helpers
 
@@ -261,13 +261,16 @@ async def test_identity_pipeline_when_sequence(
     assert all(expected.is_same(res) for res, expected in zip(results, sequence))
 
 
-original_pause_writing = OutboundWSListener.pause_writing
+original_pause_writing = ServiceConnection.pause_writing
+original_increment_drops = ServiceConnection.increment_drops
 
 
 @pytest.mark.asyncio
 @pytest.mark.usefixtures("identity_pipeline")
-@unittest.mock.patch.object(OutboundWSListener, "pause_writing", autospec=True)
+@unittest.mock.patch.object(ServiceConnection, "pause_writing", autospec=True)
+@unittest.mock.patch.object(ServiceConnection, "increment_drops", autospec=True)
 async def test_identity_pipeline_that_pause_under_pressure(
+    increment_drops: Mock,
     pause_writing_mock: Mock,
     client: ClientService,
     server: ServerService,
@@ -298,6 +301,49 @@ async def test_identity_pipeline_that_pause_under_pressure(
     assert pause_writing_mock.called
     assert len(results) == count
     assert all(expected.is_same(res) for res, expected in zip(results, sequence))
+    assert not increment_drops.called
+
+
+@pytest.fixture(params=["server", "client"])
+def any_source_writer(
+    request: pytest.FixtureRequest,
+    server_writer: NonBlockingWriter,
+    client_writer: NonBlockingWriter,
+) -> NonBlockingWriter:
+    if request.param == "server":
+        return server_writer
+    else:
+        return client_writer
+
+
+@pytest.mark.asyncio
+@unittest.mock.patch.object(ServiceConnection, "increment_drops", autospec=True)
+async def test_when_sink_buffer_exceeded(
+    increment_drops_mock: Mock,
+    client: ClientService,
+    any_source_writer: NonBlockingWriter,
+    server: ServerService,
+) -> None:
+    increment_drops_mock.side_effect = original_increment_drops
+    count = 4000
+    sequence = [MessageData.fake() for _ in range(count)]
+
+    # Source is sending messages but there are no sink readers started
+    any_source_writer.start()
+
+    asyncio.create_task(server.run())
+    await server.started.wait()
+
+    asyncio.create_task(client.run())
+    await client.started.wait()
+
+    for data in sequence:
+        await asyncio.sleep(0)
+        any_source_writer.send_message(*data)
+
+    await asyncio.sleep(1)
+
+    assert increment_drops_mock.called
 
 
 @pytest.mark.asyncio

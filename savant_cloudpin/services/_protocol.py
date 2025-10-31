@@ -1,42 +1,12 @@
 from struct import Struct
 from typing import NamedTuple
-from urllib.parse import ParseResult, urljoin, urlparse, urlunparse
 
 from savant_rs.utils import serialization
 from savant_rs.utils.serialization import Message
 
-UPSTREAM_PATH = "upstream"
-DOWNSTREAM_PATH = "downsteam"
 FRAME_HEAD_SIZE = 8
 FRAME_HEAD_FORMAT = Struct("<ll")
 API_KEY_HEADER = "x-api-key"
-
-
-def _normalize_base_url(base_url: str) -> str:
-    scheme, netloc, path, params, query, fragment = urlparse(base_url)
-
-    if not path or path.endswith("/"):
-        return base_url
-
-    components = ParseResult(
-        scheme=scheme,
-        netloc=netloc,
-        path=path + "/",
-        params=params,
-        query=query,
-        fragment=fragment,
-    )
-    return str(urlunparse(components))
-
-
-def upstream_url(base_url: str) -> str:
-    base_url = _normalize_base_url(base_url)
-    return urljoin(base_url, UPSTREAM_PATH)
-
-
-def downstream_url(base_url: str) -> str:
-    base_url = _normalize_base_url(base_url)
-    return urljoin(base_url, DOWNSTREAM_PATH)
 
 
 class FrameData(NamedTuple):
