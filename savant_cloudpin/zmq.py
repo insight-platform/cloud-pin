@@ -1,4 +1,3 @@
-from concurrent.futures import ThreadPoolExecutor
 from contextlib import AbstractContextManager
 from typing import override
 
@@ -34,24 +33,8 @@ class NonBlockingReader(AbstractContextManager["NonBlockingReader"]):
     def start(self) -> None:
         return self._reader.start()
 
-    def _shutdown_safe(self) -> None:
-        try:
-            for _ in range(8):
-                self._reader.try_receive()
-            self._reader.shutdown()
-        except RuntimeError:
-            pass
-
     def shutdown(self) -> None:
-        # workaround to avoid blocking by savant-rs internal channel
-        with ThreadPoolExecutor(max_workers=1) as ex:
-            cancellation = ex.submit(self._shutdown_safe)
-            while cancellation.running():
-                try:
-                    self._reader.try_receive()
-                except RuntimeError:
-                    cancellation.cancel()
-                    break
+        self._reader.shutdown()
 
     def try_receive(self) -> ReaderResult | None:
         return self._reader.try_receive()

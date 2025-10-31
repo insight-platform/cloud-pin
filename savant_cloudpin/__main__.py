@@ -10,5 +10,4 @@ async def serve() -> None:
         await service.run()
 
 
-if __name__ == "__main__":
-    asyncio.run(serve())
+asyncio.run(serve())
