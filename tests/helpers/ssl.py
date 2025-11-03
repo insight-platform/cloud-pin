@@ -1,8 +1,10 @@
-from dataclasses import dataclass
 import subprocess
 import sys
+from dataclasses import dataclass
 from os import PathLike
 from pathlib import Path
+
+from filelock import FileLock
 
 SSL_DIR = Path(".cache/ssl/")
 
@@ -38,6 +40,7 @@ def shell(command: str, cwd: PathLike | None = None) -> None:
 
 def prepare_ca(ca_name: str) -> CertificateAuthority:
     ca_dir = SSL_DIR / ca_name
+    lock_path = SSL_DIR / f"{ca_name}.lock"
     ca_private_dir = ca_dir / "private"
     ca_newcerts_dir = ca_dir / "newcerts"
     database_file = ca_dir / "index.txt"
@@ -50,39 +53,42 @@ def prepare_ca(ca_name: str) -> CertificateAuthority:
     ca_newcerts_dir.mkdir(parents=True, exist_ok=True)
     database_file.touch(exist_ok=True)
 
-    if not serial_file.exists():
-        serial_file.write_text("01")
+    with FileLock(lock_path):
+        if not serial_file.exists():
+            serial_file.write_text("01")
 
-    if not crt_path.exists() or not key_path.exists():
-        shell(
-            f"openssl req -new -x509 -days 3650 -noenc -extensions v3_ca -keyout {key_path} -out {crt_path}"
-            f" -subj '/CN={ca_name}/C=US/ST=California/L=San Francisco/O={ca_name}'"
-            r" -addext 'keyUsage=critical,digitalSignature,keyCertSign'"
-        )
+        if not crt_path.exists() or not key_path.exists():
+            shell(
+                f"openssl req -new -x509 -days 3650 -noenc -extensions v3_ca -keyout {key_path} -out {crt_path}"
+                f" -subj '/CN={ca_name}/C=US/ST=California/L=San Francisco/O={ca_name}'"
+                r" -addext 'keyUsage=critical,digitalSignature,keyCertSign'"
+            )
 
     return CertificateAuthority(ca_name, str(crt_path))
 
 
 def prepare_signed_cert_key(ca_name: str, filename: str) -> SignedCertKey:
     ca_dir = SSL_DIR / ca_name
+    lock_path = SSL_DIR / f"{filename}.lock"
     key_path = SSL_DIR / f"{filename}.key"
     csr_path = SSL_DIR / f"{filename}.csr"
     pem_path = SSL_DIR / f"{filename}.pem"
     config_path = Path(__file__).parent / "openssl.cnf"
 
-    if not key_path.exists():
-        shell(f"openssl genrsa -out {key_path} 2048")
-    if not csr_path.exists():
-        shell(
-            f"openssl req -new -key {key_path} -out {csr_path}"
-            f" -subj '/CN={filename}/C=US/ST=California/L=San Francisco/O={ca_name}'"
-        )
-    if not pem_path.exists():
-        shell(
-            f"openssl ca -batch -config {config_path}"
-            f" -in {csr_path.absolute()} -out {pem_path.absolute()}",
-            cwd=ca_dir,
-        )
+    with FileLock(lock_path):
+        if not key_path.exists():
+            shell(f"openssl genrsa -out {key_path} 2048")
+        if not csr_path.exists():
+            shell(
+                f"openssl req -new -key {key_path} -out {csr_path}"
+                f" -subj '/CN={filename}/C=US/ST=California/L=San Francisco/O={ca_name}'"
+            )
+        if not pem_path.exists():
+            shell(
+                f"openssl ca -batch -config {config_path}"
+                f" -in {csr_path.absolute()} -out {pem_path.absolute()}",
+                cwd=ca_dir,
+            )
 
     return SignedCertKey(
         ca_name=ca_name,

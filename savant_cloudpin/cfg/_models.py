@@ -1,5 +1,5 @@
 from dataclasses import dataclass, replace
-from typing import Self, TypedDict
+from typing import Self
 
 from savant_rs import zmq
 
@@ -21,13 +21,10 @@ class ReaderConfig:
     def as_router(self) -> Self:
         return replace(self, url="router+" + self.url.split("+")[-1])
 
-    def blocking_params(self) -> zmq.ReaderConfig:
+    def to_args(self) -> tuple[zmq.ReaderConfig, int]:
         cfg = zmq.ReaderConfigBuilder(self.url)
         cfg.with_map_config(to_map_config(self, excluded=("url", "results_queue_size")))
-        return cfg.build()
-
-    def nonblocking_params(self) -> tuple[zmq.ReaderConfig, int]:
-        return self.blocking_params(), self.results_queue_size
+        return cfg.build(), self.results_queue_size
 
 
 @dataclass
@@ -45,7 +42,7 @@ class WriterConfig:
     def as_dealer(self) -> Self:
         return replace(self, url="dealer+" + self.url.split("+")[-1])
 
-    def nonblocking_params(self) -> tuple[zmq.WriterConfig, int]:
+    def to_args(self) -> tuple[zmq.WriterConfig, int]:
         cfg = zmq.WriterConfigBuilder(self.url)
         cfg.with_map_config(
             to_map_config(self, excluded=("url", "max_inflight_messages"))
@@ -73,7 +70,7 @@ class ClientSSLConfig:
 class ServerWSConfig:
     server_url: str
     api_key: str
-    ssl: ServerSSLConfig | None
+    ssl: ServerSSLConfig | None = None
 
 
 @dataclass
@@ -100,6 +97,7 @@ class ClientServiceConfig(BaseServiceConfig):
     websockets: ClientWSConfig
 
 
-class LoadConfig(TypedDict):
+@dataclass
+class LoadConfig:
     config: str | None
     mode: str | None
