@@ -2,7 +2,7 @@ from savant_cloudpin.cfg._models import (
     ClientServiceConfig,
     ClientSSLConfig,
     ClientWSConfig,
-    LoadConfig,
+    ObservabilityConfig,
     ReaderConfig,
     ServerServiceConfig,
     ServerSSLConfig,
@@ -10,19 +10,20 @@ from savant_cloudpin.cfg._models import (
     WriterConfig,
 )
 
+DEFAULT_LOAD_CONFIG = dict(
+    config="./cloudpin.yml",
+    mode="client",
+)
+
 DEFAULT_SOURCE_CONFIG = ReaderConfig(
-    results_queue_size=100,
     url="???",
 )
 DEFAULT_SINK_CONFIG = WriterConfig(
-    max_inflight_messages=100,
     url="???",
 )
 
-
-DEFAULT_LOAD_CONFIG = LoadConfig(
-    config="./cloudpin.yml",
-    mode="client",
+DEFAULT_OBSERVABILITY_CONFIG = ObservabilityConfig(
+    log_spec="${oc.env:LOGLEVEL,warning}"
 )
 
 DEFAULT_CLIENT_CONFIG = ClientServiceConfig(
@@ -36,9 +37,9 @@ DEFAULT_CLIENT_CONFIG = ClientServiceConfig(
             check_hostname=False,
         ),
     ),
-    io_timeout=0.1,
     source=DEFAULT_SOURCE_CONFIG,
     sink=DEFAULT_SINK_CONFIG,
+    observability=DEFAULT_OBSERVABILITY_CONFIG,
 )
 
 DEFAULT_SERVER_CONFIG = ServerServiceConfig(
@@ -52,7 +53,7 @@ DEFAULT_SERVER_CONFIG = ServerServiceConfig(
             client_cert_required=True,
         ),
     ),
-    io_timeout=0.1,
     source=DEFAULT_SOURCE_CONFIG,
     sink=DEFAULT_SINK_CONFIG,
+    observability=DEFAULT_OBSERVABILITY_CONFIG,
 )

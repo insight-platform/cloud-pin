@@ -6,10 +6,13 @@ from typing import override
 from urllib.parse import urlparse
 
 from picows import WSError, ws_connect
+from savant_rs.py.log import get_logger
 
 from savant_cloudpin.cfg import ClientServiceConfig
 from savant_cloudpin.services._base import PumpServiceBase
 from savant_cloudpin.services._protocol import API_KEY_HEADER
+
+logger = get_logger(__package__ or __name__)
 
 
 class ClientService(PumpServiceBase["ClientService"]):
@@ -35,6 +38,7 @@ class ClientService(PumpServiceBase["ClientService"]):
 
         if self._ssl.cert_file and self._ssl.key_file:
             ctx.load_cert_chain(self._ssl.cert_file, self._ssl.key_file)
+            logger.warning("Continue without client certificate authentication")
         return ctx
 
     async def _connect(self) -> None:
@@ -60,6 +64,7 @@ class ClientService(PumpServiceBase["ClientService"]):
     async def _reconnect_loop(self) -> None:
         while self.running:
             if not self._is_connected():
+                logger.info("Connecting to server ...")
                 await self._connect()
             await asyncio.sleep(self._io_timeout)
 

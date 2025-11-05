@@ -12,7 +12,7 @@ from savant_cloudpin.cfg import (
     ServerWSConfig,
     WriterConfig,
 )
-from savant_cloudpin.services import ServerService
+from savant_cloudpin.services import ServerService, create_service
 from tests.helpers.ssl import SignedCertKey
 
 
@@ -62,7 +62,7 @@ def var_server_config(
 
 @pytest_asyncio.fixture
 async def server(server_config: ServerServiceConfig) -> AsyncGenerator[ServerService]:
-    async with ServerService(server_config) as service:
+    async with create_service(server_config) as service:
         yield service
 
 
@@ -70,7 +70,7 @@ async def server(server_config: ServerServiceConfig) -> AsyncGenerator[ServerSer
 async def var_server(
     var_server_config: ServerServiceConfig,
 ) -> AsyncGenerator[ServerService]:
-    async with ServerService(var_server_config) as service:
+    async with create_service(var_server_config) as service:
         yield service
 
 
@@ -83,7 +83,7 @@ async def another_cert_server(
     assert ssl is not None
     ssl.cert_file = another_cert.cert_file
     ssl.key_file = another_cert.key_file
-    async with ServerService(another_cert_config) as service:
+    async with create_service(another_cert_config) as service:
         yield service
 
 
@@ -100,7 +100,7 @@ async def same_cert_server(
     ssl.cert_file = client_ssl.cert_file
     ssl.key_file = client_ssl.key_file
 
-    async with ServerService(another_cert_config) as service:
+    async with create_service(another_cert_config) as service:
         yield service
 
 
@@ -110,5 +110,5 @@ async def nossl_server(
 ) -> AsyncGenerator[ServerService]:
     nossl_config = copy.deepcopy(server_config)
     nossl_config.websockets.ssl = None
-    async with ServerService(nossl_config) as service:
+    async with create_service(nossl_config) as service:
         yield service

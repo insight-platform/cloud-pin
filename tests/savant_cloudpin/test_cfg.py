@@ -1,5 +1,7 @@
 import os
+import textwrap
 import unittest.mock
+from collections.abc import Generator
 from unittest.mock import Mock
 
 import pytest
@@ -197,3 +199,57 @@ def test_load_config_that_env_override_file(some_cli_config: dict[str, str]) -> 
     assert result.websockets.server_url == env_server_url
     assert path_exists_mock.call_count == 1
     assert path_exists_mock.call_args == unittest.mock.call(config_path)
+
+
+@pytest.fixture(
+    params=[("str", "one"), ("str", "many"), ("dict", "one"), ("dict", "many")],
+    ids="-".join,
+)
+def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
+    type, manifold = request.param
+    count = 3 if manifold == "many" else 1
+    mdls = fake.random_elements(
+        ["my.package.module", "root", "utils.module"], count, unique=True
+    )
+    lvls = fake.random_elements(["error", "warn", "info", "debug", "trace"], count)
+
+    expected = ",".join(f"{mdl}={lvl}" for mdl, lvl in zip(mdls, lvls))
+    match type:
+        case "str":
+            file_content = f"""\
+                observability:
+                    log_spec: {expected}
+            """
+        case _ if count == 1:
+            file_content = f"""\
+                observability:
+                    log_spec:
+                        {mdls[0]}: {lvls[0]}
+            """
+        case _:
+            file_content = f"""\
+                observability:
+                    log_spec:
+                        {mdls[0]}: {lvls[0]}
+                        {mdls[1]}: {lvls[1]}
+                        {mdls[2]}: {lvls[2]}
+            """
+
+    file_content = textwrap.dedent(file_content)
+    file_mock = unittest.mock.mock_open(read_data=file_content)
+    path_exists_mock = Mock()
+    path_exists_mock.return_value = True
+    with unittest.mock.patch("os.path.exists", path_exists_mock):
+        with unittest.mock.patch("io.open", file_mock):
+            yield expected
+
+
+def test_load_config_with_log_spec_in_file(
+    some_cli_config: dict[str, str], file_log_spec: str
+) -> None:
+    cli_args = ["=".join(arg) for arg in some_cli_config.items()]
+
+    result = load_config(cli_args)
+
+    assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
+    assert result.observability.log_spec == file_log_spec

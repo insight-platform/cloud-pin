@@ -9,10 +9,13 @@ from typing import override
 from urllib.parse import urlparse
 
 from picows import WSListener, WSUpgradeRequest, ws_create_server
+from savant_rs.py.log import get_logger
 
 from savant_cloudpin.cfg import ServerServiceConfig
 from savant_cloudpin.services._base import PumpServiceBase
 from savant_cloudpin.services._protocol import API_KEY_HEADER
+
+logger = get_logger(__package__ or __name__)
 
 
 class ServerService(PumpServiceBase["ServerService"]):
@@ -30,6 +33,7 @@ class ServerService(PumpServiceBase["ServerService"]):
     @cached_property
     def _ssl_context(self) -> SSLContext | None:
         if not self._ssl:
+            logger.warning("No SSL configured. Unsafe connection")
             return None
 
         ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -37,6 +41,8 @@ class ServerService(PumpServiceBase["ServerService"]):
         if self._ssl.client_cert_required:
             ctx.verify_mode = ssl.VerifyMode.CERT_REQUIRED
             ctx.load_verify_locations(cafile=self._ssl.ca_file)
+        else:
+            logger.warning("Continue without client certificate authentication")
         return ctx
 
     def _authenticate_listener(self, request: WSUpgradeRequest) -> WSListener:

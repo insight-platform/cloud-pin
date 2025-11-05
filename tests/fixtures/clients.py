@@ -13,7 +13,7 @@ from savant_cloudpin.cfg import (
     ReaderConfig,
     WriterConfig,
 )
-from savant_cloudpin.services import ClientService
+from savant_cloudpin.services import ClientService, create_service
 from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter
 from tests.helpers.ssl import SignedCertKey
 
@@ -59,7 +59,7 @@ def var_client_config(
 async def client(
     client_config: ClientServiceConfig,
 ) -> AsyncGenerator[ClientService]:
-    async with ClientService(client_config) as service:
+    async with create_service(client_config) as service:
         yield service
 
 
@@ -67,7 +67,7 @@ async def client(
 async def var_client(
     var_client_config: ClientServiceConfig,
 ) -> AsyncGenerator[ClientService]:
-    async with ClientService(var_client_config) as service:
+    async with create_service(var_client_config) as service:
         yield service
 
 
@@ -80,7 +80,7 @@ async def another_cert_client(
     ssl = another_cert_config.websockets.ssl
     ssl.cert_file = another_cert.cert_file
     ssl.key_file = another_cert.key_file
-    async with ClientService(another_cert_config) as service:
+    async with create_service(another_cert_config) as service:
         yield service
 
 
@@ -90,7 +90,7 @@ async def another_apikey_client(
 ) -> AsyncGenerator[ClientService]:
     another_apikey_config = copy.deepcopy(client_config)
     another_apikey_config.websockets.api_key = fake.passport_number()
-    async with ClientService(another_apikey_config) as service:
+    async with create_service(another_apikey_config) as service:
         yield service
 
 
@@ -98,7 +98,7 @@ async def another_apikey_client(
 async def nossl_client(
     client_config: ClientServiceConfig,
 ) -> AsyncGenerator[ClientService]:
-    async with ClientService(client_config) as service:
+    async with create_service(client_config) as service:
         service._ssl_context = None
         service._server_url = service._server_url.replace("wss://", "ws://")
         yield service

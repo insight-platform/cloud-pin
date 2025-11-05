@@ -1,8 +1,10 @@
-from savant_cloudpin.cfg._bootstrap import load_config
+from savant_cloudpin.cfg._bootstrap import dump_to_yaml, load_config
 from savant_cloudpin.cfg._models import (
+    SENSITIVE_KEYS,
     ClientServiceConfig,
     ClientSSLConfig,
     ClientWSConfig,
+    ObservabilityConfig,
     ReaderConfig,
     ServerServiceConfig,
     ServerSSLConfig,
@@ -14,8 +16,11 @@ __all__ = [
     "ClientServiceConfig",
     "ClientSSLConfig",
     "ClientWSConfig",
+    "dump_to_yaml",
     "load_config",
+    "ObservabilityConfig",
     "ReaderConfig",
+    "SENSITIVE_KEYS",
     "ServerServiceConfig",
     "ServerSSLConfig",
     "ServerWSConfig",

@@ -1,12 +1,14 @@
 import asyncio
-import logging
+import signal
 from abc import abstractmethod
 from asyncio import Event, Queue
-from contextlib import AbstractAsyncContextManager
+from collections.abc import Generator
+from contextlib import AbstractAsyncContextManager, contextmanager
 from datetime import datetime, timedelta
-from typing import override
+from typing import ClassVar, override
 
 from picows import WSCloseCode, WSFrame, WSListener, WSMsgType, WSTransport
+from savant_rs.py.log import get_logger
 from savant_rs.zmq import ReaderResultMessage
 
 from savant_cloudpin.cfg._models import BaseServiceConfig
@@ -15,29 +17,58 @@ from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter
 
 _REPORT_INTERVAL = timedelta(seconds=1)
 
-
-logger = logging.getLogger(__name__)
+logger = get_logger(__package__ or __name__)
 
 
 class LifeCycleServiceBase[T](AbstractAsyncContextManager[T]):
+    _signal_handling: ClassVar[list[LifeCycleServiceBase]] = []
+
     def __init__(self) -> None:
         self.running = False
         self.started = Event()
         self.stopped = Event()
         self.stopped.set()
 
+    @classmethod
+    def _termination_handler(cls, *args) -> None:
+        for service in cls._signal_handling:
+            logger.info("Terminating service ...")
+            service.running = False
+
+    @contextmanager
+    def _handle_signals(self) -> Generator:
+        loop = asyncio.get_running_loop()
+        if not self._signal_handling:
+            loop.add_signal_handler(signal.SIGINT, self._termination_handler)
+            loop.add_signal_handler(signal.SIGTERM, self._termination_handler)
+
+        self._signal_handling.append(self)
+        try:
+            yield
+        finally:
+            self._signal_handling.remove(self)
+            if not self._signal_handling:
+                loop.remove_signal_handler(signal.SIGTERM)
+                loop.remove_signal_handler(signal.SIGINT)
+
     @abstractmethod
     async def _serve(self) -> None: ...
 
     async def run(self) -> None:
+        logger.info("Running service ...")
         self.stopped.clear()
         self.running = True
         try:
-            await self._serve()
+            with self._handle_signals():
+                await self._serve()
+        except:
+            logger.exception("Service error")
+            raise
         finally:
             self.running = False
             self.started.clear()
             self.stopped.set()
+            logger.info("Service stopped")
 
     async def stop(self) -> None:
         self.running = False
@@ -78,7 +109,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
             return
 
         logger.warning(
-            f"WebSocket sink queue limit exceeded. Dropped messages: {self._sink_drops}"
+            f"WebSockets sink queue limit exceeded. Dropped messages: {self._sink_drops}"
         )
         self._sink_drops = 0
         self._last_log = datetime.now()
@@ -88,6 +119,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
             while self._sink.has_capacity():
                 if self._sink_queue.empty():
                     get_task = asyncio.create_task(self._sink_queue.get())
+                    logger.debug("Waiting inbound WebSockets ...")
                     while not get_task.done():
                         await asyncio.wait([get_task], timeout=self._io_timeout)
                         self._log_dropped()
@@ -100,7 +132,9 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                 topic, msg, extra = protocol.unpack_stream_frame(frame)
                 self._sink.send_message(topic, msg, extra)
                 self._sink_queue.task_done()
+                await asyncio.sleep(0)
 
+            logger.debug(f"ZeroMQ sink queue is full. Waiting {self._io_timeout} sec.")
             await asyncio.sleep(self._io_timeout)
             self._log_dropped()
 
@@ -108,6 +142,10 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
         while self.running:
             transport = self._writing_transport()
             if not transport or self._source.is_empty():
+                if self._is_connected():
+                    logger.debug(
+                        f"WebSockets writing is paused. Waiting {self._io_timeout} sec."
+                    )
                 await asyncio.sleep(self._io_timeout)
                 continue
 
@@ -115,6 +153,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                 if isinstance(msg, ReaderResultMessage):
                     break
             else:
+                logger.debug(f"ZeroMQ source is empty. Waiting {self._io_timeout} sec.")
                 await asyncio.sleep(self._io_timeout)
                 continue
 
@@ -148,9 +187,11 @@ class ServiceConnection(WSListener):
 
     @override
     def on_ws_connected(self, transport: WSTransport) -> None:
+        logger.info("WebSockets connection established")
         existing = self.current_transport()
         if existing and transport != existing:
             transport.send_close(WSCloseCode.POLICY_VIOLATION)
+            logger.warning("Unexpected extra Websockets connection. Disconnecting...")
         else:
             self.transport = transport
             self.active_writing = True
@@ -158,6 +199,7 @@ class ServiceConnection(WSListener):
 
     @override
     def on_ws_disconnected(self, transport: WSTransport) -> None:
+        logger.info("WebSockets connection stopped")
         self.transport = None
         self.active_writing = False
 
@@ -174,7 +216,9 @@ class ServiceConnection(WSListener):
     @override
     def pause_writing(self) -> None:
         self.active_writing = False
+        logger.warning("Pause WebSockets writing")
 
     @override
     def resume_writing(self) -> None:
         self.active_writing = True
+        logger.info("Resume WebSockets writing")

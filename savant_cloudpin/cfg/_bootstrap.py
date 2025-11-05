@@ -1,10 +1,10 @@
+import copy
 import os.path
 import re
+from collections.abc import Sequence
 from typing import Any
 
-from omegaconf import OmegaConf
-from omegaconf.base import SCMode
-from omegaconf.dictconfig import DictConfig
+from omegaconf import DictConfig, ListConfig, OmegaConf, SCMode
 
 from savant_cloudpin.cfg import _utils as utils
 from savant_cloudpin.cfg._defaults import (
@@ -62,15 +62,28 @@ def merge_env_config(
     return cfg
 
 
+def join_log_spec(cfg: DictConfig | ListConfig) -> None:
+    if not isinstance(cfg, DictConfig):
+        return
+    if "observability" not in cfg or "log_spec" not in cfg.observability:
+        return
+    if not isinstance(cfg.observability.log_spec, (DictConfig, dict)):
+        return
+    cfg.observability.log_spec = ",".join(
+        f"{k}={v}" for k, v in cfg.observability.log_spec.items()
+    )
+
+
 def load_config(
     args_list: list[str] | None = None,
 ) -> ClientServiceConfig | ServerServiceConfig:
     cli_cfg = OmegaConf.from_cli(args_list)
-    env_cfg = utils.as_value_dict(utils.env_override(DEFAULT_LOAD_CONFIG))
+    env_cfg = utils.env_override(DEFAULT_LOAD_CONFIG)
     cfg = OmegaConf.merge(env_cfg, cli_cfg)
 
     yml_exists = cfg.config and os.path.exists(cfg.config)
     yml_cfg = OmegaConf.load(cfg.config) if yml_exists else OmegaConf.create({})
+    join_log_spec(yml_cfg)
 
     cfg = OmegaConf.merge(yml_cfg, env_cfg, cli_cfg)
     assert isinstance(cfg, DictConfig) and isinstance(yml_cfg, DictConfig)
@@ -88,3 +101,18 @@ def load_config(
             return validated_dataclass(cfg, ClientServiceConfig)
         case _:
             raise ValueError("Invalid service mode")
+
+
+def dump_to_yaml(
+    config: ClientServiceConfig | ServerServiceConfig, scrape_keys: Sequence[str] = ()
+) -> str:
+    if scrape_keys:
+        config = copy.deepcopy(config)
+        utils.scrape_sensitive_keys(config, scrape_keys)
+
+    mode = "server" if isinstance(config, ServerServiceConfig) else "client"
+    summary = OmegaConf.to_container(
+        OmegaConf.structured(config), structured_config_mode=SCMode.DICT
+    )
+    summary = OmegaConf.merge(dict(mode=mode), summary)
+    return OmegaConf.to_yaml(summary)

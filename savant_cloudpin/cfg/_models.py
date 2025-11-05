@@ -1,15 +1,17 @@
-from dataclasses import dataclass, replace
-from typing import Self
+from dataclasses import dataclass, field, replace
+from typing import Protocol, Self
 
 from savant_rs import zmq
 
 from savant_cloudpin.cfg._utils import to_map_config
 
+SENSITIVE_KEYS = ("api_key",)
+
 
 @dataclass
 class ReaderConfig:
-    results_queue_size: int
     url: str
+    results_queue_size: int = 100
     receive_timeout: int | None = None
     receive_hwm: int | None = None
     topic_prefix_spec: str | None = None
@@ -29,8 +31,8 @@ class ReaderConfig:
 
 @dataclass
 class WriterConfig:
-    max_inflight_messages: int
     url: str
+    max_inflight_messages: int = 100
     send_timeout: int | None = None
     send_retries: int | None = None
     send_hwm: int | None = None
@@ -81,23 +83,30 @@ class ClientWSConfig:
 
 
 @dataclass
-class BaseServiceConfig:
-    io_timeout: float
+class ObservabilityConfig:
+    log_spec: str | None = "warning"
+
+
+class BaseServiceConfig(Protocol):
     source: ReaderConfig
     sink: WriterConfig
+    io_timeout: float
+    observability: ObservabilityConfig
 
 
 @dataclass
 class ServerServiceConfig(BaseServiceConfig):
     websockets: ServerWSConfig
+    source: ReaderConfig
+    sink: WriterConfig
+    io_timeout: float = 0.1
+    observability: ObservabilityConfig = field(default_factory=ObservabilityConfig)
 
 
 @dataclass
 class ClientServiceConfig(BaseServiceConfig):
     websockets: ClientWSConfig
-
-
-@dataclass
-class LoadConfig:
-    config: str | None
-    mode: str | None
+    source: ReaderConfig
+    sink: WriterConfig
+    io_timeout: float = 0.1
+    observability: ObservabilityConfig = field(default_factory=ObservabilityConfig)
