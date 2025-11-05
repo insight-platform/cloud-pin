@@ -1,7 +1,10 @@
 import dataclasses
-from collections.abc import Mapping
+import operator
+from collections.abc import Mapping, Sequence
 from dataclasses import asdict
-from typing import Any
+from typing import Any, cast
+
+from omegaconf import DictConfig
 
 ENV_PREFIX = "CLOUDPIN"
 
@@ -32,16 +35,21 @@ def as_value_dict(obj: Any) -> dict[str, Any]:
     return drop_none_values(dct)
 
 
-def env_override(
-    obj: Any,
+def env_override[T](
+    obj: T,
     default: str | None = None,
     prefix: str = ENV_PREFIX,
-) -> Any:
+) -> T:
     if isinstance(obj, type):
         raise ValueError("Instance is expected")
     updates = dict[str, Any]()
-    for field in dataclasses.fields(obj):
-        name, val = field.name, getattr(obj, field.name)
+    if dataclasses.is_dataclass(obj):
+        items = ((f.name, getattr(obj, f.name)) for f in dataclasses.fields(obj))
+    elif isinstance(obj, dict):
+        items = obj.items()
+    else:
+        raise TypeError("Unsupported type")
+    for name, val in items:
         env_name = f"{prefix}_{name.upper()}"
         match val:
             case str() | int() | float() if default is None:
@@ -57,4 +65,29 @@ def env_override(
             case _:
                 updates[name] = env_override(val, default, env_name)
 
+    if isinstance(obj, dict):
+        obj.update(**updates)
+        return cast(T, obj)
     return dataclasses.replace(obj, **updates)
+
+
+def scrape_sensitive_keys(obj: Any, sensitive_keys: Sequence[str]) -> None:
+    if dataclasses.is_dataclass(obj):
+        items = ((f.name, getattr(obj, f.name)) for f in dataclasses.fields(obj))
+        setkey = setattr
+    elif isinstance(obj, (dict, DictConfig)):
+        items = obj.items()
+        setkey = operator.setitem
+    else:
+        raise TypeError(f"Unsupported type {type(obj)}")
+
+    for key, val in items:
+        match val:
+            case str() if isinstance(key, str) and key in sensitive_keys:
+                setkey(obj, key, "*****")
+            case int() if isinstance(key, str) and key in sensitive_keys:
+                setkey(obj, key, 0)
+            case str() | int() | float() | bool() | None:
+                continue
+            case _:
+                scrape_sensitive_keys(val, sensitive_keys)
