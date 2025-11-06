@@ -24,7 +24,12 @@ fake = Faker()
 def client_ws_config(
     ws_url: str, api_key: str, client_ssl_config: ClientSSLConfig
 ) -> ClientWSConfig:
-    return ClientWSConfig(server_url=ws_url, api_key=api_key, ssl=client_ssl_config)
+    return ClientWSConfig(
+        endpoint=ws_url,
+        api_key=api_key,
+        ssl=client_ssl_config,
+        reconnect_timeout=0.01,
+    )
 
 
 @pytest.fixture
@@ -98,9 +103,10 @@ async def another_apikey_client(
 async def nossl_client(
     client_config: ClientServiceConfig,
 ) -> AsyncGenerator[ClientService]:
-    async with create_service(client_config) as service:
-        service._ssl_context = None
-        service._server_url = service._server_url.replace("wss://", "ws://")
+    config = copy.deepcopy(client_config)
+    config.websockets.endpoint = config.websockets.endpoint.replace("wss://", "ws://")
+    config.websockets.ssl = ClientSSLConfig(insecure=True, check_hostname=False)
+    async with create_service(config) as service:
         yield service
 
 

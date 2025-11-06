@@ -1,33 +1,14 @@
-from collections.abc import Generator
-from typing import Literal
+from collections.abc import AsyncGenerator, Generator
 
 import pytest
+import pytest_asyncio
+from aiohttp import ClientSession
 from faker import Faker
 
+from tests.helpers.connections import ConnectDir, SocketType
 from tests.helpers.ports import PortPool
 
-type ConnectDir = Literal["bind", "connect"]
-type ConnectDirPair = tuple[ConnectDir, ConnectDir]
-type SocketType = Literal["tcp", "ipc"]
-
-
-DIR_OPPOSITES: dict[ConnectDir, ConnectDir] = {
-    "bind": "connect",
-    "connect": "bind",
-}
-
 fake = Faker()
-
-
-def opposite_dir(dir: ConnectDir | str) -> ConnectDir:
-    if dir not in ("bind", "connect"):
-        raise ValueError(f"Invalid connection direction {dir}")
-    return DIR_OPPOSITES[dir]
-
-
-def opposite_dir_url(url: str) -> str:
-    dir, common_url = url.split(":", 1)
-    return f"{opposite_dir(dir)}:{common_url}"
 
 
 @pytest.fixture(params=["bind", "connect"])
@@ -60,3 +41,9 @@ def api_key() -> str:
 def ws_url(port_pool: PortPool) -> Generator[str]:
     with port_pool.lease() as port:
         yield f"wss://127.0.0.1:{port}/"
+
+
+@pytest_asyncio.fixture
+async def client_session() -> AsyncGenerator[ClientSession]:
+    async with ClientSession() as session:
+        yield session

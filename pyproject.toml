@@ -5,8 +5,13 @@ description = "A service to run Savant pipeline remotely (cloud) via WebSockets 
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "aiohttp>=3.13.2",
     "omegaconf>=2.3.0",
+    "opentelemetry-exporter-otlp-proto-http>=1.38.0",
+    "opentelemetry-exporter-prometheus>=0.59b0",
+    "opentelemetry-sdk>=1.38.0",
     "picows>=1.10.1",
+    "prometheus-client>=0.23.1",
 ]
 
 [tool.pyrefly]
@@ -33,10 +38,13 @@ prerequisite_platform = [
 dev = [
     "faker>=37.11.0",
     "filelock>=3.20.0",
-    "pyrefly>=0.39.0",
+    "freezegun>=1.5.5",
+    "pillow>=12.0.0",
+    "pyrefly>=0.40.0",
     "pytest>=8.4.2",
     "pytest-asyncio>=1.2.0",
     "pytest-randomly>=4.0.1",
+    "pytest-vcr>=1.0.2",
     "pytest-xdist>=3.8.0",
-    "ruff>=0.14.1",
+    "ruff>=0.14.4",
 ]

@@ -1,0 +1,17 @@
+global:
+  scrape_interval:     5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: cloud-pin-client
+    static_configs:
+      - targets: ["cloud-pin:8081"]
+  - job_name: cloud-pin-server
+    static_configs:
+      - targets: ["cloud-pin:8082"]
+  - job_name: otlp-collector
+    static_configs:
+      - targets: ["otlp-collector:8889"]

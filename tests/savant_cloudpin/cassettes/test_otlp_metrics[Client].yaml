@@ -1,0 +1,1642 @@
+interactions:
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGRmDvc4K4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:41 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGRI5WdUK4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:41 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGaywvNsK4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\b\x0E\x12\x15sending queue is full"
+    headers:
+      Content-Length:
+      - '25'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:41 GMT
+    status:
+      code: 503
+      message: Service Unavailable
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGaywvNsK4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:42 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGdrnwBYL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:42 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGW3LER0L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:42 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGfKKQSML4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:42 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGQjObikL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:42 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGfJ4li8L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:42 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGccTyTUL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:42 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGdqj/DsL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGQN9JkIL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGSLcU0gL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGSrfh04L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGSM4wVQL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGWKb8FoL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGdqQKGEL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGV22WWcL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGYonj20L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGatgx3ML4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:43 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGRRI+HkL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGTpjLYAL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGXR7YYYL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGS/HlIwL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGcTXwZIL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGbPE7pgL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGW4HJZ8L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGaRnUaUL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGZGAiasL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGR7ou7EL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:44 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGYv58rcL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGWM5Ib4L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGY5uX8QL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGd9+isoL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGaJ5utAL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGacg7NYL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGSj5F90L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGeW4P+ML4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGWvtbekL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:45 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGSwqou8L4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:46 GMT
+    status:
+      code: 200
+      message: OK
+- request:
+    body: !!binary |
+      CrcECpEBCiIKFnRlbGVtZXRyeS5zZGsubGFuZ3VhZ2USCAoGcHl0aG9uCiUKEnRlbGVtZXRyeS5z
+      ZGsubmFtZRIPCg1vcGVudGVsZW1ldHJ5CiEKFXRlbGVtZXRyeS5zZGsudmVyc2lvbhIICgYxLjM4
+      LjAKIQoMc2VydmljZS5uYW1lEhEKD3Vua25vd25fc2VydmljZRKgAwoKCghDbG91ZFBpbhKRAwoM
+      bWVzc2FnZV9zaXplEh9EYXRhIHNpemUgb2YgV2ViU29ja2V0cyBtZXNzYWdlSt8CCtoCEckz78gK
+      4HYYGV7X0/UL4HYYIQEAAAAAAAAAKQAAAAAAAAhAMoABAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+      AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA6eAAAAAAAAAAA
+      AAAAAAAAFEAAAAAAAAAkQAAAAAAAADlAAAAAAAAASUAAAAAAAMBSQAAAAAAAAFlAAAAAAABAb0AA
+      AAAAAEB/QAAAAAAAcIdAAAAAAABAj0AAAAAAAIijQAAAAAAAiLNAAAAAAABMvUAAAAAAAIjDQEoT
+      CgdzZXJ2aWNlEggKBkNsaWVudEoQCgZzb2NrZXQSBgoEU2lua1kAAAAAAAAIQGEAAAAAAAAIQBAC
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate, zstd
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '570'
+      Content-Type:
+      - application/x-protobuf
+      User-Agent:
+      - OTel-OTLP-Exporter-Python/1.38.0
+    method: POST
+    uri: http://otlp-collector:4318/v1/metrics
+  response:
+    body:
+      string: "\n\0"
+    headers:
+      Content-Length:
+      - '2'
+      Content-Type:
+      - application/x-protobuf
+      Date:
+      - Tue, 11 Nov 2025 06:30:46 GMT
+    status:
+      code: 200
+      message: OK
+version: 1

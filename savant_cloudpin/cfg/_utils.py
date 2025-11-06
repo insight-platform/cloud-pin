@@ -7,6 +7,7 @@ from typing import Any, cast
 from omegaconf import DictConfig
 
 ENV_PREFIX = "CLOUDPIN"
+META_ALT_ENV_VAR = "cloudpin_alt_env_var"
 
 
 def to_map_config(
@@ -24,7 +25,9 @@ def drop_none_values[K](dct: Mapping[K, Any]) -> dict[K, Any]:
     result = dict[K, Any]()
     for key, val in dct.items():
         if isinstance(val, dict):
-            result[key] = drop_none_values(val)
+            dict_val = drop_none_values(val)
+            if dict_val:
+                result[key] = dict_val
         elif val is not None:
             result[key] = val
     return result
@@ -33,6 +36,16 @@ def drop_none_values[K](dct: Mapping[K, Any]) -> dict[K, Any]:
 def as_value_dict(obj: Any) -> dict[str, Any]:
     dct = dataclasses.asdict(obj)
     return drop_none_values(dct)
+
+
+def env_interpolation(
+    default: str | int | float | bool, name: str, alt: str | None = None
+) -> str:
+    if isinstance(default, bool):
+        default = str(default).lower()
+    if alt:
+        default = f"${{oc.env:{alt},{default}}}"
+    return f"${{oc.env:{name},{default}}}"
 
 
 def env_override[T](
@@ -44,23 +57,23 @@ def env_override[T](
         raise ValueError("Instance is expected")
     updates = dict[str, Any]()
     if dataclasses.is_dataclass(obj):
-        items = ((f.name, getattr(obj, f.name)) for f in dataclasses.fields(obj))
+        items = (
+            (f.name, getattr(obj, f.name), f.metadata.get(META_ALT_ENV_VAR, None))
+            for f in dataclasses.fields(obj)
+        )
     elif isinstance(obj, dict):
-        items = obj.items()
+        items = ((key, val, None) for key, val in obj.items())
     else:
         raise TypeError("Unsupported type")
-    for name, val in items:
+    for name, val, alt in items:
         env_name = f"{prefix}_{name.upper()}"
         match val:
-            case str() | int() | float() if default is None:
-                updates[name] = f"${{oc.env:{env_name},{val}}}"
-            case str() | int() | float():
-                updates[name] = f"${{oc.env:{env_name},{default}}}"
-            case bool() if default is None:
-                updates[name] = f"${{oc.env:{env_name},{str(val).lower()}}}"
-            case bool():
-                updates[name] = f"${{oc.env:{env_name},{default}}}"
-            case None:
+            case str() | int() | float() | bool():
+                if default is None:
+                    updates[name] = env_interpolation(val, env_name, alt)
+                else:
+                    updates[name] = env_interpolation(default, env_name, alt)
+            case list() | None:
                 continue
             case _:
                 updates[name] = env_override(val, default, env_name)
@@ -89,5 +102,10 @@ def scrape_sensitive_keys(obj: Any, sensitive_keys: Sequence[str]) -> None:
                 setkey(obj, key, 0)
             case str() | int() | float() | bool() | None:
                 continue
+            case list():
+                for i, item in list(enumerate(val)):
+                    if not item or isinstance(item, (str, int, float, bool)):
+                        continue
+                    val[i] = scrape_sensitive_keys(item, sensitive_keys)
             case _:
                 scrape_sensitive_keys(val, sensitive_keys)

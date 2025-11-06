@@ -1,11 +1,9 @@
 import asyncio
-import signal
 from abc import abstractmethod
 from asyncio import Event, Queue
-from collections.abc import Generator
-from contextlib import AbstractAsyncContextManager, contextmanager
+from contextlib import AbstractAsyncContextManager
 from datetime import datetime, timedelta
-from typing import ClassVar, override
+from typing import override
 
 from picows import WSCloseCode, WSFrame, WSListener, WSMsgType, WSTransport
 from savant_rs.py.log import get_logger
@@ -13,6 +11,7 @@ from savant_rs.zmq import ReaderResultMessage
 
 from savant_cloudpin.cfg._models import BaseServiceConfig
 from savant_cloudpin.services import _protocol as protocol
+from savant_cloudpin.services._measuring import Measurements
 from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter
 
 _REPORT_INTERVAL = timedelta(seconds=1)
@@ -21,57 +20,37 @@ logger = get_logger(__package__ or __name__)
 
 
 class LifeCycleServiceBase[T](AbstractAsyncContextManager[T]):
-    _signal_handling: ClassVar[list[LifeCycleServiceBase]] = []
-
-    def __init__(self) -> None:
+    def __init__(self, measurements: Measurements) -> None:
+        self._measurements = measurements
         self.running = False
         self.started = Event()
         self.stopped = Event()
         self.stopped.set()
 
-    @classmethod
-    def _termination_handler(cls, *args) -> None:
-        for service in cls._signal_handling:
-            logger.info("Terminating service ...")
-            service.running = False
-
-    @contextmanager
-    def _handle_signals(self) -> Generator:
-        loop = asyncio.get_running_loop()
-        if not self._signal_handling:
-            loop.add_signal_handler(signal.SIGINT, self._termination_handler)
-            loop.add_signal_handler(signal.SIGTERM, self._termination_handler)
-
-        self._signal_handling.append(self)
-        try:
-            yield
-        finally:
-            self._signal_handling.remove(self)
-            if not self._signal_handling:
-                loop.remove_signal_handler(signal.SIGTERM)
-                loop.remove_signal_handler(signal.SIGINT)
-
     @abstractmethod
     async def _serve(self) -> None: ...
 
     async def run(self) -> None:
+        self._measurements.metrics.reset_meter_provider()
         logger.info("Running service ...")
         self.stopped.clear()
         self.running = True
         try:
-            with self._handle_signals():
-                await self._serve()
+            await self._serve()
         except:
             logger.exception("Service error")
             raise
         finally:
-            self.running = False
+            self.stop_running()
             self.started.clear()
             self.stopped.set()
             logger.info("Service stopped")
 
-    async def stop(self) -> None:
+    def stop_running(self) -> None:
         self.running = False
+
+    async def stop(self) -> None:
+        self.stop_running()
         await self.stopped.wait()
 
     @override
@@ -81,8 +60,8 @@ class LifeCycleServiceBase[T](AbstractAsyncContextManager[T]):
 
 
 class PumpServiceBase[T](LifeCycleServiceBase[T]):
-    def __init__(self, config: BaseServiceConfig) -> None:
-        super().__init__()
+    def __init__(self, config: BaseServiceConfig, measurements: Measurements) -> None:
+        super().__init__(measurements)
         self._io_timeout = config.io_timeout
         self._sink = NonBlockingWriter(*config.sink.as_dealer().to_args())
         self._source = NonBlockingReader(*config.source.as_router().to_args())
@@ -116,6 +95,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
 
     async def _inbound_ws_loop(self) -> None:
         while self.running:
+            self._measurements.measure_zmq_capacity(self._sink)
             while self._sink.has_capacity():
                 if self._sink_queue.empty():
                     get_task = asyncio.create_task(self._sink_queue.get())
@@ -123,13 +103,16 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                     while not get_task.done():
                         await asyncio.wait([get_task], timeout=self._io_timeout)
                         self._log_dropped()
+                        self._measurements.measure_zmq_capacity(self._sink)
                         if not self.running:
                             return
                     frame = await get_task
                 else:
                     frame = self._sink_queue.get_nowait()
 
+                self._measurements.measure_sink_message_data(frame)
                 topic, msg, extra = protocol.unpack_stream_frame(frame)
+                msg = self._measurements.measure_sink_message(msg)
                 self._sink.send_message(topic, msg, extra)
                 self._sink_queue.task_done()
                 await asyncio.sleep(0)
@@ -140,6 +123,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
 
     async def _outbound_ws_loop(self) -> None:
         while self.running:
+            self._measurements.measure_zmq_capacity(self._source)
             transport = self._writing_transport()
             if not transport or self._source.is_empty():
                 if self._is_connected():
@@ -157,8 +141,10 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                 await asyncio.sleep(self._io_timeout)
                 continue
 
-            packed = protocol.pack_stream_frame(msg.topic, msg.message, msg.data(0))
+            message = self._measurements.measure_source_message(msg.message)
+            packed = protocol.pack_stream_frame(msg.topic, message, msg.data(0))
             transport.send(WSMsgType.BINARY, packed)
+            self._measurements.measure_source_message_data(packed)
             await asyncio.sleep(0)
 
 
@@ -167,6 +153,7 @@ class ServiceConnection(WSListener):
 
     def __init__(self, service: PumpServiceBase) -> None:
         self.service = service
+        self.measurements = service._measurements
         self.sink_queue = service._sink_queue
         self.active_writing = False
 
@@ -179,6 +166,7 @@ class ServiceConnection(WSListener):
         self.service._connection = self
 
     def increment_drops(self) -> None:
+        self.measurements.increment_ws_read_drops()
         self.service._sink_drops += 1
 
     def shutdown(self) -> None:
@@ -187,6 +175,7 @@ class ServiceConnection(WSListener):
 
     @override
     def on_ws_connected(self, transport: WSTransport) -> None:
+        self.measurements.increment_ws_connected()
         logger.info("WebSockets connection established")
         existing = self.current_transport()
         if existing and transport != existing:
@@ -199,6 +188,7 @@ class ServiceConnection(WSListener):
 
     @override
     def on_ws_disconnected(self, transport: WSTransport) -> None:
+        self.measurements.increment_ws_disconnected()
         logger.info("WebSockets connection stopped")
         self.transport = None
         self.active_writing = False
@@ -208,6 +198,7 @@ class ServiceConnection(WSListener):
         if frame.msg_type != WSMsgType.BINARY:
             return
 
+        self.measurements.measure_ws_reading_capacity(self.sink_queue)
         if not self.sink_queue.full():
             self.sink_queue.put_nowait(frame.get_payload_as_bytes())
         else:
@@ -216,9 +207,11 @@ class ServiceConnection(WSListener):
     @override
     def pause_writing(self) -> None:
         self.active_writing = False
+        self.measurements.increment_ws_writing_pauses()
         logger.warning("Pause WebSockets writing")
 
     @override
     def resume_writing(self) -> None:
         self.active_writing = True
+        self.measurements.increment_ws_writing_resumed()
         logger.info("Resume WebSockets writing")

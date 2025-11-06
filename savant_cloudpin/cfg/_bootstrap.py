@@ -52,13 +52,28 @@ def merge_env_config(
     env_cfg = utils.drop_none_values(env_cfg)
     cfg = OmegaConf.merge(yml_cfg, env_cfg, cli_cfg)
 
-    ssl = "websockets" in cfg and "ssl" in cfg.websockets
-    ssl = cfg.websockets.ssl if ssl else {}
+    assert isinstance(cfg, DictConfig)
+    cfg.websockets = utils.drop_none_values(cfg.get("websockets", {}))
+    ssl = cfg.websockets.get("ssl", None)
+    cfg.observability = utils.drop_none_values(cfg.get("observability", {}))
+    health = cfg.observability.get("health", {})
+    metrics = cfg.observability.get("metrics", {})
+    otlp = metrics.get("otlp", {})
+    prometheus = metrics.get("prometheus", {})
 
     cfg = OmegaConf.merge(default_cfg, cfg)
     assert isinstance(cfg, DictConfig)
-    if not any(val is not None for val in ssl.values()):
-        cfg.websockets.ssl = None
+    if not ssl:
+        cfg.websockets["ssl"] = None
+    if not health:
+        cfg.observability["health"] = None
+    if not metrics:
+        cfg.observability["metrics"] = None
+    else:
+        if not otlp:
+            cfg.observability.metrics.otlp = None
+        if not prometheus:
+            cfg.observability.metrics.prometheus = None
     return cfg
 
 

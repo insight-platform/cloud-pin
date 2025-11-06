@@ -1,13 +1,9 @@
 {
-  "build": {
-    "dockerfile": "Dockerfile.${localEnv:DOCKER_MODE:default}",
-    "args": {
-      "REMOTE_USER": "${localEnv:USER}",
-      "REMOTE_UID": "${localEnv:REMOTE_UID:1000}",
-      "REMOTE_GID": "${localEnv:REMOTE_GID:1000}"
-    }
-  },
+  "dockerComposeFile": "./compose.yaml",
   "remoteUser": "${localEnv:REMOTE_USER}",
+  "service": "cloud-pin",
+  "runServices": ["cloud-pin"],
+  "workspaceFolder": "/workspace",
   "features": {
     "ghcr.io/devcontainers-extra/features/uv:1": {},
     "ghcr.io/devcontainers/features/git:1": {}
