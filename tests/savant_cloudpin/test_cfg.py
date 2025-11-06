@@ -33,7 +33,7 @@ def some_cli_config() -> dict[str, str]:
         case "server" if ssl:
             return {
                 "mode": "server",
-                "websockets.server_url": fake.uri(["wss", "ws"]),
+                "websockets.endpoint": fake.uri(["wss", "ws"]),
                 "websockets.api_key": fake.passport_number(),
                 "websockets.ssl.cert_file": fake.file_path(),
                 "websockets.ssl.key_file": fake.file_path(),
@@ -43,7 +43,7 @@ def some_cli_config() -> dict[str, str]:
         case "server" if not ssl:
             return {
                 "mode": "server",
-                "websockets.server_url": fake.uri(["wss", "ws"]),
+                "websockets.endpoint": fake.uri(["wss", "ws"]),
                 "websockets.api_key": fake.passport_number(),
                 "source.url": fake_zmq_url(),
                 "sink.url": fake_zmq_url(),
@@ -51,7 +51,7 @@ def some_cli_config() -> dict[str, str]:
         case "client":
             return {
                 "mode": "client",
-                "websockets.server_url": fake.uri(["wss", "ws"]),
+                "websockets.endpoint": fake.uri(["wss", "ws"]),
                 "websockets.api_key": fake.passport_number(),
                 "websockets.ssl.cert_file": fake.file_path(),
                 "websockets.ssl.key_file": fake.file_path(),
@@ -122,29 +122,29 @@ def test_load_config_when_invalid_urls(
 
 
 def test_load_config_with_environ_var(some_cli_config: dict[str, str]) -> None:
-    server_url = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_SERVER_URL": server_url}
+    endpoint = fake.uri(["wss", "ws"])
+    environ_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": endpoint}
     cli_config = some_cli_config.copy()
-    del cli_config["websockets.server_url"]
+    del cli_config["websockets.endpoint"]
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
     with unittest.mock.patch.dict(os.environ, environ_vars):
         result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == server_url
+    assert result.websockets.endpoint == endpoint
 
 
 def test_load_config_with_file(some_cli_config: dict[str, str]) -> None:
-    server_url = fake.uri(["wss", "ws"])
+    endpoint = fake.uri(["wss", "ws"])
     config_path = f"/tmp{fake.file_path(extension='yml')}"
     file_mock = unittest.mock.mock_open(
-        read_data=(f"websockets:\n  server_url: {server_url}"),
+        read_data=(f"websockets:\n  endpoint: {endpoint}"),
     )
     path_exists_mock = Mock()
     path_exists_mock.return_value = True
     cli_config = some_cli_config.copy()
-    del cli_config["websockets.server_url"]
+    del cli_config["websockets.endpoint"]
     cli_config["config"] = config_path
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
@@ -153,38 +153,38 @@ def test_load_config_with_file(some_cli_config: dict[str, str]) -> None:
             result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == server_url
+    assert result.websockets.endpoint == endpoint
     assert path_exists_mock.call_count == 1
     assert path_exists_mock.call_args == unittest.mock.call(config_path)
 
 
 def test_load_config_that_cli_override_env(some_cli_config: dict[str, str]) -> None:
-    env_server_url = fake.uri(["wss", "ws"])
-    cli_server_url = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_SERVER_URL": env_server_url}
+    env_endpoint = fake.uri(["wss", "ws"])
+    cli_endpoint = fake.uri(["wss", "ws"])
+    environ_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": env_endpoint}
     cli_config = some_cli_config.copy()
-    cli_config["websockets.server_url"] = cli_server_url
+    cli_config["websockets.endpoint"] = cli_endpoint
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
     with unittest.mock.patch.dict(os.environ, environ_vars):
         result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == cli_server_url
+    assert result.websockets.endpoint == cli_endpoint
 
 
 def test_load_config_that_env_override_file(some_cli_config: dict[str, str]) -> None:
-    env_server_url = fake.uri(["wss", "ws"])
-    file_server_url = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_SERVER_URL": env_server_url}
+    env_endpoint = fake.uri(["wss", "ws"])
+    file_endpoint = fake.uri(["wss", "ws"])
+    environ_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": env_endpoint}
     config_path = f"/tmp{fake.file_path(extension='yml')}"
     file_mock = unittest.mock.mock_open(
-        read_data=(f"websockets:\n  server_url: {file_server_url}"),
+        read_data=(f"websockets:\n  endpoint: {file_endpoint}"),
     )
     path_exists_mock = Mock()
     path_exists_mock.return_value = True
     cli_config = some_cli_config.copy()
-    del cli_config["websockets.server_url"]
+    del cli_config["websockets.endpoint"]
     cli_config["config"] = config_path
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
@@ -196,7 +196,7 @@ def test_load_config_that_env_override_file(some_cli_config: dict[str, str]) -> 
         result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == env_server_url
+    assert result.websockets.endpoint == env_endpoint
     assert path_exists_mock.call_count == 1
     assert path_exists_mock.call_args == unittest.mock.call(config_path)
 
@@ -244,6 +244,7 @@ def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
             yield expected
 
 
+@unittest.mock.patch.dict(os.environ, {}, clear=True)
 def test_load_config_with_log_spec_in_file(
     some_cli_config: dict[str, str], file_log_spec: str
 ) -> None:

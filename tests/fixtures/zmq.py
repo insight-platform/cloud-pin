@@ -5,7 +5,7 @@ from savant_rs.zmq import ReaderConfigBuilder, WriterConfigBuilder
 
 from savant_cloudpin.cfg import ReaderConfig, WriterConfig
 from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter
-from tests.fixtures.connections import ConnectDir, SocketType, opposite_dir_url
+from tests.helpers.connections import ConnectDir, SocketType, opposite_dir_url
 from tests.helpers.ports import PortPool
 
 

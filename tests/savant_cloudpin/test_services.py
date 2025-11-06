@@ -1,56 +1,20 @@
 import asyncio
 import unittest
 import unittest.mock
-from typing import NamedTuple, Self
 from unittest.mock import Mock
 
 import pytest
 from faker import Faker
-from savant_rs.primitives import Attribute, AttributeValue, UserData
-from savant_rs.utils import serialization
-from savant_rs.utils.serialization import Message
 from savant_rs.zmq import ReaderResultMessage
 
 from savant_cloudpin.cfg import ServerServiceConfig
 from savant_cloudpin.services import ClientService, ServerService
 from savant_cloudpin.services._base import ServiceConnection
-from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter, ReaderResult
+from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter
 from tests import helpers
+from tests.helpers.messages import MessageData
 
 fake = Faker()
-
-
-class MessageData(NamedTuple):
-    topic: bytes
-    msg: serialization.Message
-    extra: bytes | None
-
-    def is_same(self, res: ReaderResult | None) -> bool:
-        if not isinstance(res, ReaderResultMessage):
-            return False
-        if self.topic != res.topic or self.extra != res.data(0):
-            return False
-
-        msg = serialization.save_message_to_bytes(self.msg)
-        res_msg = serialization.save_message_to_bytes(res.message)
-        return msg == res_msg
-
-    @classmethod
-    def fake(cls, large: bool = False) -> Self:
-        topic = fake.domain_word()
-        extra = fake.sentence(nb_words=100000 if large else 10)
-
-        match fake.random_element(["unknown", "user_data"]):
-            case "user_data":
-                values = [AttributeValue.string(fake.pystr())]
-                attr = Attribute(fake.domain_name(), fake.pystr(), values, None)
-                user_data = UserData(fake.uuid4())
-                user_data.set_attribute(attr)
-                msg = user_data.to_message()
-            case _:
-                msg = Message.unknown(fake.sentence())
-
-        return cls(topic=topic.encode(), msg=msg, extra=extra.encode())
 
 
 @pytest.mark.asyncio

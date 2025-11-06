@@ -2,7 +2,11 @@ from savant_cloudpin.cfg._models import (
     ClientServiceConfig,
     ClientSSLConfig,
     ClientWSConfig,
+    HealthConfig,
+    MetricsConfig,
     ObservabilityConfig,
+    OTLPMetricConfig,
+    PrometheusConfig,
     ReaderConfig,
     ServerServiceConfig,
     ServerSSLConfig,
@@ -23,19 +27,20 @@ DEFAULT_SINK_CONFIG = WriterConfig(
 )
 
 DEFAULT_OBSERVABILITY_CONFIG = ObservabilityConfig(
-    log_spec="${oc.env:LOGLEVEL,warning}"
+    health=HealthConfig(endpoint="???"),
+    metrics=MetricsConfig(
+        otlp=OTLPMetricConfig(endpoint="???"),
+        prometheus=PrometheusConfig(
+            endpoint="???",
+        ),
+    ),
 )
 
 DEFAULT_CLIENT_CONFIG = ClientServiceConfig(
     websockets=ClientWSConfig(
-        server_url="???",
+        endpoint="???",
         api_key="???",
-        ssl=ClientSSLConfig(
-            ca_file=None,
-            cert_file="???",
-            key_file="???",
-            check_hostname=False,
-        ),
+        ssl=ClientSSLConfig(),
     ),
     source=DEFAULT_SOURCE_CONFIG,
     sink=DEFAULT_SINK_CONFIG,
@@ -44,13 +49,11 @@ DEFAULT_CLIENT_CONFIG = ClientServiceConfig(
 
 DEFAULT_SERVER_CONFIG = ServerServiceConfig(
     websockets=ServerWSConfig(
-        server_url="???",
+        endpoint="???",
         api_key="???",
         ssl=ServerSSLConfig(
-            ca_file=None,
             cert_file="???",
             key_file="???",
-            client_cert_required=True,
         ),
     ),
     source=DEFAULT_SOURCE_CONFIG,
