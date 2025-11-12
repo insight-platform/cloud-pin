@@ -11,7 +11,7 @@ from savant_cloudpin.signals import handle_signals
 async def serve() -> None:
     config = load_config()
 
-    init_logging(config.observability.log_spec)
+    init_logging(config.log.spec)
     logger = get_logger(__name__)
 
     logger.info("Configuration loaded")
@@ -21,8 +21,8 @@ async def serve() -> None:
     logger.info("Running main loop ...")
     async with (
         handle_signals() as handler,
-        serve_health_endpoint(config.observability.health),
-        serve_metrics(config.observability.metrics),
+        serve_health_endpoint(config.health),
+        serve_metrics(config.metrics),
         create_service(config) as service,
     ):
         handler.append(service.stop_running)

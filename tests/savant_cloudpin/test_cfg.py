@@ -217,19 +217,19 @@ def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
     match type:
         case "str":
             file_content = f"""\
-                observability:
-                    log_spec: {expected}
+                log:
+                    spec: {expected}
             """
         case _ if count == 1:
             file_content = f"""\
-                observability:
-                    log_spec:
+                log:
+                    spec:
                         {mdls[0]}: {lvls[0]}
             """
         case _:
             file_content = f"""\
-                observability:
-                    log_spec:
+                log:
+                    spec:
                         {mdls[0]}: {lvls[0]}
                         {mdls[1]}: {lvls[1]}
                         {mdls[2]}: {lvls[2]}
@@ -253,4 +253,4 @@ def test_load_config_with_log_spec_in_file(
     result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.observability.log_spec == file_log_spec
+    assert result.log.spec == file_log_spec

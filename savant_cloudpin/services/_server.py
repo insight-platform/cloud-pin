@@ -21,7 +21,7 @@ logger = get_logger(__package__ or __name__)
 
 class ServerService(PumpServiceBase["ServerService"]):
     def __init__(self, config: ServerServiceConfig) -> None:
-        super().__init__(config, Measurements("Server", config.observability.metrics))
+        super().__init__(config, Measurements("Server", config.metrics))
         default_port = "443" if config.websockets.ssl else "80"
         ws_url = config.websockets.endpoint
         netloc = urlparse(ws_url).netloc.split(":")

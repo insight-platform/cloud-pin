@@ -18,7 +18,7 @@ logger = get_logger(__package__ or __name__)
 
 class ClientService(PumpServiceBase["ClientService"]):
     def __init__(self, config: ClientServiceConfig) -> None:
-        super().__init__(config, Measurements("Client", config.observability.metrics))
+        super().__init__(config, Measurements("Client", config.metrics))
         ws_url = config.websockets.endpoint
         scheme = urlparse(ws_url).scheme
         if not config.websockets.ssl.insecure and scheme != "wss":

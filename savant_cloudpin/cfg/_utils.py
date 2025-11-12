@@ -1,12 +1,16 @@
 import dataclasses
 import operator
+import os
 from collections.abc import Mapping, Sequence
 from dataclasses import asdict
 from typing import Any, cast
 
 from omegaconf import DictConfig
 
-ENV_PREFIX = "CLOUDPIN"
+PREFIX_ENV_VAR = "CLOUDPIN_ENV_PREFIX"
+_CUSTOM_ENV_PREFIX = os.environ.get(PREFIX_ENV_VAR, "").strip()
+_HAS_ENV_PREFIX = _CUSTOM_ENV_PREFIX.strip().lower() not in ("none", "false", "0")
+ENV_PREFIX = os.environ.get(PREFIX_ENV_VAR, "CLOUDPIN") if _HAS_ENV_PREFIX else ""
 META_ALT_ENV_VAR = "cloudpin_alt_env_var"
 
 
@@ -51,7 +55,7 @@ def env_interpolation(
 def env_override[T](
     obj: T,
     default: str | None = None,
-    prefix: str = ENV_PREFIX,
+    prefix: str | None = ENV_PREFIX,
 ) -> T:
     if isinstance(obj, type):
         raise ValueError("Instance is expected")
@@ -66,7 +70,7 @@ def env_override[T](
     else:
         raise TypeError("Unsupported type")
     for name, val, alt in items:
-        env_name = f"{prefix}_{name.upper()}"
+        env_name = f"{prefix}_{name.upper()}" if prefix else name.upper()
         match val:
             case str() | int() | float() | bool():
                 if default is None:

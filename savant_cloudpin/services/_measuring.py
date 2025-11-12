@@ -116,7 +116,7 @@ class Metrics:
     @cached_property
     def consumed_ws_reading_capacity(self) -> Histogram:
         return self._meter.create_histogram(
-            name="left_ws_reading_capacity",
+            name="consumed_ws_reading_capacity",
             description="Consumed WebSockets reading queue capacity",
             explicit_bucket_boundaries_advisory=self._boundaries.consumed_ws_reading_capacity
             or None,

@@ -55,9 +55,8 @@ def merge_env_config(
     assert isinstance(cfg, DictConfig)
     cfg.websockets = utils.drop_none_values(cfg.get("websockets", {}))
     ssl = cfg.websockets.get("ssl", None)
-    cfg.observability = utils.drop_none_values(cfg.get("observability", {}))
-    health = cfg.observability.get("health", {})
-    metrics = cfg.observability.get("metrics", {})
+    health = utils.drop_none_values(cfg.get("health", {}))
+    metrics = utils.drop_none_values(cfg.get("metrics", {}))
     otlp = metrics.get("otlp", {})
     prometheus = metrics.get("prometheus", {})
 
@@ -66,27 +65,25 @@ def merge_env_config(
     if not ssl:
         cfg.websockets["ssl"] = None
     if not health:
-        cfg.observability["health"] = None
+        cfg.health = None
     if not metrics:
-        cfg.observability["metrics"] = None
+        cfg.metrics = None
     else:
         if not otlp:
-            cfg.observability.metrics.otlp = None
+            cfg.metrics.otlp = None
         if not prometheus:
-            cfg.observability.metrics.prometheus = None
+            cfg.metrics.prometheus = None
     return cfg
 
 
 def join_log_spec(cfg: DictConfig | ListConfig) -> None:
     if not isinstance(cfg, DictConfig):
         return
-    if "observability" not in cfg or "log_spec" not in cfg.observability:
+    if "log" not in cfg or "spec" not in cfg.log:
         return
-    if not isinstance(cfg.observability.log_spec, (DictConfig, dict)):
+    if not isinstance(cfg.log.spec, (DictConfig, dict)):
         return
-    cfg.observability.log_spec = ",".join(
-        f"{k}={v}" for k, v in cfg.observability.log_spec.items()
-    )
+    cfg.log.spec = ",".join(f"{k}={v}" for k, v in cfg.log.spec.items())
 
 
 def load_config(

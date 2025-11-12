@@ -10,7 +10,6 @@ from savant_cloudpin.cfg import (
     ClientSSLConfig,
     ClientWSConfig,
     MetricsConfig,
-    ObservabilityConfig,
     OTLPMetricConfig,
     PrometheusConfig,
     ReaderConfig,
@@ -60,11 +59,9 @@ CLIENT_CONFIG = ClientServiceConfig(
     ),
     source=ReaderConfig(url=CLIENT_SOURCE_URL),
     sink=WriterConfig(url=CLIENT_SINK_URL),
-    observability=ObservabilityConfig(
-        metrics=MetricsConfig(
-            prometheus=PrometheusConfig(endpoint=CLIENT_PROMETHEUS_URL),
-            otlp=OTLPMetricConfig(endpoint=OTEL_TRACER_URL),
-        )
+    metrics=MetricsConfig(
+        prometheus=PrometheusConfig(endpoint=CLIENT_PROMETHEUS_URL),
+        otlp=OTLPMetricConfig(endpoint=OTEL_TRACER_URL),
     ),
 )
 SERVER_CONFIG = ServerServiceConfig(
@@ -74,11 +71,9 @@ SERVER_CONFIG = ServerServiceConfig(
     ),
     sink=WriterConfig(url=SERVER_SINK_URL),
     source=ReaderConfig(url=SERVER_SOURCE_URL),
-    observability=ObservabilityConfig(
-        metrics=MetricsConfig(
-            prometheus=PrometheusConfig(endpoint=SERVER_PROMETHEUS_URL),
-            otlp=OTLPMetricConfig(endpoint=OTEL_TRACER_URL),
-        )
+    metrics=MetricsConfig(
+        prometheus=PrometheusConfig(endpoint=SERVER_PROMETHEUS_URL),
+        otlp=OTLPMetricConfig(endpoint=OTEL_TRACER_URL),
     ),
 )
 
@@ -124,7 +119,7 @@ match sys.argv[1]:
         async def serve() -> None:
             async with (
                 handle_signals() as handler,
-                serve_metrics(SERVER_CONFIG.observability.metrics),
+                serve_metrics(SERVER_CONFIG.metrics),
                 create_service(SERVER_CONFIG) as service,
             ):
                 handler.append(service.stop_running)
@@ -135,7 +130,7 @@ match sys.argv[1]:
         async def serve() -> None:
             async with (
                 handle_signals() as handler,
-                serve_metrics(CLIENT_CONFIG.observability.metrics),
+                serve_metrics(CLIENT_CONFIG.metrics),
                 create_service(CLIENT_CONFIG) as service,
             ):
                 handler.append(service.stop_running)

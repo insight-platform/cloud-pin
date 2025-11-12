@@ -126,19 +126,17 @@ class MetricsConfig:
 
 
 @dataclass
-class ObservabilityConfig:
-    log_spec: str | None = field(
-        default="warning", metadata={META_ALT_ENV_VAR: "LOGLEVEL"}
-    )
-    health: HealthConfig | None = None
-    metrics: MetricsConfig | None = None
+class LogConfig:
+    spec: str | None = field(default="warning", metadata={META_ALT_ENV_VAR: "LOGLEVEL"})
 
 
 class BaseServiceConfig(Protocol):
     source: ReaderConfig
     sink: WriterConfig
     io_timeout: float
-    observability: ObservabilityConfig
+    log: LogConfig
+    health: HealthConfig | None
+    metrics: MetricsConfig | None
 
 
 @dataclass
@@ -147,7 +145,9 @@ class ServerServiceConfig(BaseServiceConfig):
     source: ReaderConfig
     sink: WriterConfig
     io_timeout: float = 0.1
-    observability: ObservabilityConfig = field(default_factory=ObservabilityConfig)
+    log: LogConfig = field(default_factory=LogConfig)
+    health: HealthConfig | None = None
+    metrics: MetricsConfig | None = None
 
 
 @dataclass
@@ -156,4 +156,6 @@ class ClientServiceConfig(BaseServiceConfig):
     source: ReaderConfig
     sink: WriterConfig
     io_timeout: float = 0.1
-    observability: ObservabilityConfig = field(default_factory=ObservabilityConfig)
+    log: LogConfig = field(default_factory=LogConfig)
+    health: HealthConfig | None = None
+    metrics: MetricsConfig | None = None
