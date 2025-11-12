@@ -208,16 +208,16 @@ class Measurements:
                 pass
         return cast(Attributes, attrs)
 
-    def measure_sink_message(self, message: Message) -> Message:
-        return self._measure_message(message, socket="Sink")
+    def add_sink_message_measure(self, message: Message) -> None:
+        self._add_message_measure(message, socket="Sink")
 
-    def measure_source_message(self, message: Message) -> Message:
-        return self._measure_message(message, socket="Source")
+    def add_source_message_measure(self, message: Message) -> None:
+        self._add_message_measure(message, socket="Source")
 
-    def _measure_message(self, message: Message, socket: ZMQSocket) -> Message:
+    def _add_message_measure(self, message: Message, socket: ZMQSocket) -> None:
         self.metrics.messages.add(1, self._attrs(socket=socket))
         self._count_trace(message, socket)
-        return self._measure_video_frame(message, socket)
+        self._measure_video_frame(message, socket)
 
     def _count_trace(self, message: Message, socket: ZMQSocket) -> None:
         span = getattr(message, "span_context", None)
@@ -232,7 +232,7 @@ class Measurements:
         )
         self.metrics.traces.add(1, attributes=attrs)
 
-    def _measure_video_frame(self, message: Message, socket: ZMQSocket) -> Message:
+    def _measure_video_frame(self, message: Message, socket: ZMQSocket) -> None:
         timings = VideoFrameTimings(message)
         match self._service, socket:
             case "Client", "Source":
@@ -245,7 +245,6 @@ class Measurements:
                 timings.append_timing(LABEL_CLIENT_SINK)
 
         self._detect_video_frame_delay(timings)
-        return timings.message
 
     def _detect_video_frame_delay(self, timings: VideoFrameTimings) -> None:
         delay = timings.get_delay(LABEL_CLIENT_SOURCE, LABEL_SERVER_SINK)

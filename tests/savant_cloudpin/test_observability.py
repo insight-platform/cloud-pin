@@ -106,13 +106,13 @@ def test_measurements_for_video_frame(delay_mock: Mock) -> None:
     msg = MessageData.fake_video_frame().to_message()
 
     with freeze_time("2025-11-11", tz_offset=0) as frozen_time:
-        msg = client_measurements.measure_source_message(msg)
+        client_measurements.add_source_message_measure(msg)
         frozen_time.tick(delta=timedelta(seconds=2))
-        msg = server_measurements.measure_sink_message(msg)
+        server_measurements.add_sink_message_measure(msg)
         frozen_time.tick(delta=timedelta(seconds=10))
-        msg = server_measurements.measure_source_message(msg)
+        server_measurements.add_source_message_measure(msg)
         frozen_time.tick(delta=timedelta(seconds=3))
-        msg = client_measurements.measure_sink_message(msg)
+        client_measurements.add_sink_message_measure(msg)
 
     assert delay_mock.record.called
     assert delay_mock.record.call_args_list == [

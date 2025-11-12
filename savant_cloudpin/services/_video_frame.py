@@ -64,7 +64,6 @@ class VideoFrameTimings:
 
         timings.values = values
         video_frame.set_attribute(timings)
-        self.message = Message.video_frame(video_frame)
         self.reset_cache()
 
     def get_delay(self, start_label: ValueLabel, end_label: ValueLabel) -> float | None:

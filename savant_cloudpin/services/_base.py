@@ -112,7 +112,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
 
                 self._measurements.measure_sink_message_data(frame)
                 topic, msg, extra = protocol.unpack_stream_frame(frame)
-                msg = self._measurements.measure_sink_message(msg)
+                self._measurements.add_sink_message_measure(msg)
                 self._sink.send_message(topic, msg, extra)
                 self._sink_queue.task_done()
                 await asyncio.sleep(0)
@@ -141,8 +141,9 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                 await asyncio.sleep(self._io_timeout)
                 continue
 
-            message = self._measurements.measure_source_message(msg.message)
-            packed = protocol.pack_stream_frame(msg.topic, message, msg.data(0))
+            topic, message, extra = msg.topic, msg.message, msg.data(0)
+            self._measurements.add_source_message_measure(message)
+            packed = protocol.pack_stream_frame(topic, message, extra)
             transport.send(WSMsgType.BINARY, packed)
             self._measurements.measure_source_message_data(packed)
             await asyncio.sleep(0)
