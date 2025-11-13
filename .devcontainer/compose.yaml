@@ -1,0 +1,32 @@
+services:
+  cloud-pin:
+    build:
+      dockerfile: Dockerfile.${DOCKER_MODE:-default}
+      args:
+        REMOTE_USER: ${USER}
+        REMOTE_UID: ${REMOTE_UID:-1000}
+        REMOTE_GID: ${REMOTE_GID:-1000}
+    command: /bin/sh -c "while sleep 1000; do :; done"
+    volumes:
+      - ..:/workspace:cached
+    depends_on:
+      prometheus:
+        condition: service_started
+        required: false
+      otlp-collector:
+        condition: service_started
+        required: false
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-otlp-receiver
+  otlp-collector:                                                                                                                                                       
+    image: otel/opentelemetry-collector-contrib:latest                                                                                                                                          
+    volumes:                            
+      - ./configs/otlp-collector.yaml:/etc/otelcol-contrib/config.yaml     

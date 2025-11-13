@@ -13,6 +13,7 @@ from savant_rs.py.log import get_logger
 
 from savant_cloudpin.cfg import ServerServiceConfig
 from savant_cloudpin.services._base import PumpServiceBase
+from savant_cloudpin.services._measuring import Measurements
 from savant_cloudpin.services._protocol import API_KEY_HEADER
 
 logger = get_logger(__package__ or __name__)
@@ -20,9 +21,9 @@ logger = get_logger(__package__ or __name__)
 
 class ServerService(PumpServiceBase["ServerService"]):
     def __init__(self, config: ServerServiceConfig) -> None:
-        super().__init__(config)
+        super().__init__(config, Measurements("Server", config.metrics))
         default_port = "443" if config.websockets.ssl else "80"
-        ws_url = config.websockets.server_url
+        ws_url = config.websockets.endpoint
         netloc = urlparse(ws_url).netloc.split(":")
 
         self._host = netloc.pop(0)
@@ -46,8 +47,11 @@ class ServerService(PumpServiceBase["ServerService"]):
         return ctx
 
     def _authenticate_listener(self, request: WSUpgradeRequest) -> WSListener:
+        self._measurements.increment_ws_connection_attempts()
+
         client_api_key = request.headers.get(API_KEY_HEADER, None)
         if self._api_key != client_api_key:
+            self._measurements.increment_ws_connection_errors()
             raise ConnectionRefusedError("Invalid API key")
         return self._create_listener()
 
@@ -73,7 +77,8 @@ class ServerService(PumpServiceBase["ServerService"]):
                 await server.start_serving()
 
                 self.started.set()
-                await asyncio.gather(
-                    self._inbound_ws_loop(),
-                    self._outbound_ws_loop(),
-                )
+                loops = [self._inbound_ws_loop, self._outbound_ws_loop]
+                tasks = [asyncio.create_task(loop()) for loop in loops]
+                await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+                self.stop_running()
+                await asyncio.gather(*tasks)

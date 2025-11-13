@@ -20,11 +20,19 @@ from tests.fixtures.clients import (
 )
 from tests.fixtures.connections import (
     api_key,
+    client_session,
     connect_dir1,
     connect_dir2,
     port_pool,
     socket_type,
     ws_url,
+)
+from tests.fixtures.observability import (
+    health_config,
+    otlp_base_url,
+    otlp_metric_config,
+    prometheus_base_url,
+    prometheus_config,
 )
 from tests.fixtures.pipelines import identity_pipeline, var_identity_pipeline
 from tests.fixtures.servers import (
@@ -71,7 +79,13 @@ __all__ = [
     "socket_type",
     "port_pool",
     "api_key",
+    "client_session",
     "ws_url",
+    "health_config",
+    "otlp_base_url",
+    "otlp_metric_config",
+    "prometheus_base_url",
+    "prometheus_config",
     "identity_pipeline",
     "var_identity_pipeline",
     "client_ws_config",

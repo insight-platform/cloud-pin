@@ -1,7 +1,9 @@
+import functools
 import os
 import textwrap
 import unittest.mock
 from collections.abc import Generator
+from typing import Any
 from unittest.mock import Mock
 
 import pytest
@@ -33,7 +35,7 @@ def some_cli_config() -> dict[str, str]:
         case "server" if ssl:
             return {
                 "mode": "server",
-                "websockets.server_url": fake.uri(["wss", "ws"]),
+                "websockets.endpoint": fake.uri(["wss", "ws"]),
                 "websockets.api_key": fake.passport_number(),
                 "websockets.ssl.cert_file": fake.file_path(),
                 "websockets.ssl.key_file": fake.file_path(),
@@ -43,7 +45,7 @@ def some_cli_config() -> dict[str, str]:
         case "server" if not ssl:
             return {
                 "mode": "server",
-                "websockets.server_url": fake.uri(["wss", "ws"]),
+                "websockets.endpoint": fake.uri(["wss", "ws"]),
                 "websockets.api_key": fake.passport_number(),
                 "source.url": fake_zmq_url(),
                 "sink.url": fake_zmq_url(),
@@ -51,7 +53,7 @@ def some_cli_config() -> dict[str, str]:
         case "client":
             return {
                 "mode": "client",
-                "websockets.server_url": fake.uri(["wss", "ws"]),
+                "websockets.endpoint": fake.uri(["wss", "ws"]),
                 "websockets.api_key": fake.passport_number(),
                 "websockets.ssl.cert_file": fake.file_path(),
                 "websockets.ssl.key_file": fake.file_path(),
@@ -94,6 +96,40 @@ def invalid_urls(request: pytest.FixtureRequest) -> tuple[str, str]:
     return request.param
 
 
+@pytest.fixture(
+    params=[
+        "websockets.endpoint",
+        "websockets.ssl.cert_file",
+        "metrics.otlp.endpoint",
+        "metrics.prometheus.endpoint",
+        "health.endpoint",
+    ]
+)
+def config_env_vars(request: pytest.FixtureRequest) -> tuple[str, dict[str, str], Any]:
+    match request.param:
+        case "websockets.endpoint":
+            expected = fake.uri(["wss", "ws"])
+            env_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": expected}
+        case "websockets.ssl.cert_file":
+            expected = fake.file_path()
+            env_vars = {
+                "CLOUDPIN_WEBSOCKETS_SSL_CERT_FILE": expected,
+                "CLOUDPIN_WEBSOCKETS_SSL_KEY_FILE": fake.file_path(),
+            }
+        case "metrics.otlp.endpoint":
+            expected = fake.uri(["http"])
+            env_vars = {"CLOUDPIN_METRICS_OTLP_ENDPOINT": expected}
+        case "metrics.prometheus.endpoint":
+            expected = fake.uri(["http"])
+            env_vars = {"CLOUDPIN_METRICS_PROMETHEUS_ENDPOINT": expected}
+        case "health.endpoint":
+            expected = fake.uri(["http"])
+            env_vars = {"CLOUDPIN_HEALTH_ENDPOINT": expected}
+        case _:
+            raise ValueError
+    return request.param, env_vars, expected
+
+
 def test_load_config_when_valid_urls(
     valid_urls: tuple[str, str], some_cli_config: dict[str, str]
 ) -> None:
@@ -121,30 +157,31 @@ def test_load_config_when_invalid_urls(
         load_config(cli_args)
 
 
-def test_load_config_with_environ_var(some_cli_config: dict[str, str]) -> None:
-    server_url = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_SERVER_URL": server_url}
+def test_load_config_with_environ_var(
+    some_cli_config: dict[str, str], config_env_vars: tuple[str, str, Any]
+) -> None:
+    attr, env_vars, expected = config_env_vars
     cli_config = some_cli_config.copy()
-    del cli_config["websockets.server_url"]
+    cli_config.pop(attr, None)
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
-    with unittest.mock.patch.dict(os.environ, environ_vars):
+    with unittest.mock.patch.dict(os.environ, env_vars):
         result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == server_url
+    assert expected == functools.reduce(getattr, attr.split("."), result)
 
 
 def test_load_config_with_file(some_cli_config: dict[str, str]) -> None:
-    server_url = fake.uri(["wss", "ws"])
+    endpoint = fake.uri(["wss", "ws"])
     config_path = f"/tmp{fake.file_path(extension='yml')}"
     file_mock = unittest.mock.mock_open(
-        read_data=(f"websockets:\n  server_url: {server_url}"),
+        read_data=(f"websockets:\n  endpoint: {endpoint}"),
     )
     path_exists_mock = Mock()
     path_exists_mock.return_value = True
     cli_config = some_cli_config.copy()
-    del cli_config["websockets.server_url"]
+    del cli_config["websockets.endpoint"]
     cli_config["config"] = config_path
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
@@ -153,38 +190,38 @@ def test_load_config_with_file(some_cli_config: dict[str, str]) -> None:
             result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == server_url
+    assert result.websockets.endpoint == endpoint
     assert path_exists_mock.call_count == 1
     assert path_exists_mock.call_args == unittest.mock.call(config_path)
 
 
 def test_load_config_that_cli_override_env(some_cli_config: dict[str, str]) -> None:
-    env_server_url = fake.uri(["wss", "ws"])
-    cli_server_url = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_SERVER_URL": env_server_url}
+    env_endpoint = fake.uri(["wss", "ws"])
+    cli_endpoint = fake.uri(["wss", "ws"])
+    environ_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": env_endpoint}
     cli_config = some_cli_config.copy()
-    cli_config["websockets.server_url"] = cli_server_url
+    cli_config["websockets.endpoint"] = cli_endpoint
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
     with unittest.mock.patch.dict(os.environ, environ_vars):
         result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == cli_server_url
+    assert result.websockets.endpoint == cli_endpoint
 
 
 def test_load_config_that_env_override_file(some_cli_config: dict[str, str]) -> None:
-    env_server_url = fake.uri(["wss", "ws"])
-    file_server_url = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_SERVER_URL": env_server_url}
+    env_endpoint = fake.uri(["wss", "ws"])
+    file_endpoint = fake.uri(["wss", "ws"])
+    environ_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": env_endpoint}
     config_path = f"/tmp{fake.file_path(extension='yml')}"
     file_mock = unittest.mock.mock_open(
-        read_data=(f"websockets:\n  server_url: {file_server_url}"),
+        read_data=(f"websockets:\n  endpoint: {file_endpoint}"),
     )
     path_exists_mock = Mock()
     path_exists_mock.return_value = True
     cli_config = some_cli_config.copy()
-    del cli_config["websockets.server_url"]
+    del cli_config["websockets.endpoint"]
     cli_config["config"] = config_path
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
@@ -196,7 +233,7 @@ def test_load_config_that_env_override_file(some_cli_config: dict[str, str]) -> 
         result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.server_url == env_server_url
+    assert result.websockets.endpoint == env_endpoint
     assert path_exists_mock.call_count == 1
     assert path_exists_mock.call_args == unittest.mock.call(config_path)
 
@@ -217,19 +254,19 @@ def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
     match type:
         case "str":
             file_content = f"""\
-                observability:
-                    log_spec: {expected}
+                log:
+                    spec: {expected}
             """
         case _ if count == 1:
             file_content = f"""\
-                observability:
-                    log_spec:
+                log:
+                    spec:
                         {mdls[0]}: {lvls[0]}
             """
         case _:
             file_content = f"""\
-                observability:
-                    log_spec:
+                log:
+                    spec:
                         {mdls[0]}: {lvls[0]}
                         {mdls[1]}: {lvls[1]}
                         {mdls[2]}: {lvls[2]}
@@ -244,6 +281,7 @@ def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
             yield expected
 
 
+@unittest.mock.patch.dict(os.environ, {}, clear=True)
 def test_load_config_with_log_spec_in_file(
     some_cli_config: dict[str, str], file_log_spec: str
 ) -> None:
@@ -252,4 +290,4 @@ def test_load_config_with_log_spec_in_file(
     result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.observability.log_spec == file_log_spec
+    assert result.log.spec == file_log_spec

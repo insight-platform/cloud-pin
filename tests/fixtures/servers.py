@@ -21,7 +21,7 @@ def server_ws_config(
     ws_url: str, api_key: str, server_ssl_config: ServerSSLConfig
 ) -> ServerWSConfig:
     return ServerWSConfig(
-        server_url=ws_url,
+        endpoint=ws_url,
         api_key=api_key,
         ssl=ServerSSLConfig(
             ca_file=server_ssl_config.ca_file,

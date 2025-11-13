@@ -20,6 +20,10 @@ type ReaderResult = (
 class NonBlockingReader(AbstractContextManager["NonBlockingReader"]):
     def __init__(self, config: zmq.ReaderConfig, results_queue_size: int) -> None:
         self._reader = zmq.NonBlockingReader(config, results_queue_size)
+        self.results_queue_size = results_queue_size
+
+    def enqueued_results(self) -> int:
+        return self._reader.enqueued_results()
 
     def is_empty(self) -> bool:
         return self._reader.enqueued_results() == 0
@@ -51,10 +55,13 @@ class NonBlockingReader(AbstractContextManager["NonBlockingReader"]):
 class NonBlockingWriter(AbstractContextManager["NonBlockingWriter"]):
     def __init__(self, config: zmq.WriterConfig, max_inflight_messages: int) -> None:
         self._writer = zmq.NonBlockingWriter(config, max_inflight_messages)
-        self._queue_size = max_inflight_messages
+        self.max_inflight_messages = max_inflight_messages
+
+    def inflight_messages(self) -> int:
+        return self._writer.inflight_messages()
 
     def has_capacity(self) -> bool:
-        return self._writer.inflight_messages() < self._queue_size
+        return self._writer.inflight_messages() < self.max_inflight_messages
 
     def is_started(self) -> bool:
         return self._writer.is_started()

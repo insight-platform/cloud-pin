@@ -52,26 +52,38 @@ def merge_env_config(
     env_cfg = utils.drop_none_values(env_cfg)
     cfg = OmegaConf.merge(yml_cfg, env_cfg, cli_cfg)
 
-    ssl = "websockets" in cfg and "ssl" in cfg.websockets
-    ssl = cfg.websockets.ssl if ssl else {}
+    assert isinstance(cfg, DictConfig)
+    cfg.websockets = utils.drop_none_values(cfg.get("websockets", {}))
+    ssl = cfg.websockets.get("ssl", None)
+    health = utils.drop_none_values(cfg.get("health", {}))
+    metrics = utils.drop_none_values(cfg.get("metrics", {}))
+    otlp = metrics.get("otlp", {})
+    prometheus = metrics.get("prometheus", {})
 
     cfg = OmegaConf.merge(default_cfg, cfg)
     assert isinstance(cfg, DictConfig)
-    if not any(val is not None for val in ssl.values()):
-        cfg.websockets.ssl = None
+    if not ssl:
+        cfg.websockets["ssl"] = None
+    if not health:
+        cfg.health = None
+    if not metrics:
+        cfg.metrics = None
+    else:
+        if not otlp:
+            cfg.metrics.otlp = None
+        if not prometheus:
+            cfg.metrics.prometheus = None
     return cfg
 
 
 def join_log_spec(cfg: DictConfig | ListConfig) -> None:
     if not isinstance(cfg, DictConfig):
         return
-    if "observability" not in cfg or "log_spec" not in cfg.observability:
+    if "log" not in cfg or "spec" not in cfg.log:
         return
-    if not isinstance(cfg.observability.log_spec, (DictConfig, dict)):
+    if not isinstance(cfg.log.spec, (DictConfig, dict)):
         return
-    cfg.observability.log_spec = ",".join(
-        f"{k}={v}" for k, v in cfg.observability.log_spec.items()
-    )
+    cfg.log.spec = ",".join(f"{k}={v}" for k, v in cfg.log.spec.items())
 
 
 def load_config(

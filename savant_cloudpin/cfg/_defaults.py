@@ -2,7 +2,10 @@ from savant_cloudpin.cfg._models import (
     ClientServiceConfig,
     ClientSSLConfig,
     ClientWSConfig,
-    ObservabilityConfig,
+    HealthConfig,
+    MetricsConfig,
+    OTLPMetricConfig,
+    PrometheusConfig,
     ReaderConfig,
     ServerServiceConfig,
     ServerSSLConfig,
@@ -22,38 +25,36 @@ DEFAULT_SINK_CONFIG = WriterConfig(
     url="???",
 )
 
-DEFAULT_OBSERVABILITY_CONFIG = ObservabilityConfig(
-    log_spec="${oc.env:LOGLEVEL,warning}"
+DEFAULT_HEALTH_CONFIG = HealthConfig(endpoint="???")
+
+DEFAULT_METRICS_CONFIG = MetricsConfig(
+    otlp=OTLPMetricConfig(endpoint="???"),
+    prometheus=PrometheusConfig(endpoint="???"),
 )
 
 DEFAULT_CLIENT_CONFIG = ClientServiceConfig(
     websockets=ClientWSConfig(
-        server_url="???",
+        endpoint="???",
         api_key="???",
-        ssl=ClientSSLConfig(
-            ca_file=None,
-            cert_file="???",
-            key_file="???",
-            check_hostname=False,
-        ),
+        ssl=ClientSSLConfig(),
     ),
     source=DEFAULT_SOURCE_CONFIG,
     sink=DEFAULT_SINK_CONFIG,
-    observability=DEFAULT_OBSERVABILITY_CONFIG,
+    health=DEFAULT_HEALTH_CONFIG,
+    metrics=DEFAULT_METRICS_CONFIG,
 )
 
 DEFAULT_SERVER_CONFIG = ServerServiceConfig(
     websockets=ServerWSConfig(
-        server_url="???",
+        endpoint="???",
         api_key="???",
         ssl=ServerSSLConfig(
-            ca_file=None,
             cert_file="???",
             key_file="???",
-            client_cert_required=True,
         ),
     ),
     source=DEFAULT_SOURCE_CONFIG,
     sink=DEFAULT_SINK_CONFIG,
-    observability=DEFAULT_OBSERVABILITY_CONFIG,
+    health=DEFAULT_HEALTH_CONFIG,
+    metrics=DEFAULT_METRICS_CONFIG,
 )
