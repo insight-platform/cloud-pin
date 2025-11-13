@@ -1,7 +1,9 @@
+import functools
 import os
 import textwrap
 import unittest.mock
 from collections.abc import Generator
+from typing import Any
 from unittest.mock import Mock
 
 import pytest
@@ -94,6 +96,40 @@ def invalid_urls(request: pytest.FixtureRequest) -> tuple[str, str]:
     return request.param
 
 
+@pytest.fixture(
+    params=[
+        "websockets.endpoint",
+        "websockets.ssl.cert_file",
+        "metrics.otlp.endpoint",
+        "metrics.prometheus.endpoint",
+        "health.endpoint",
+    ]
+)
+def config_env_vars(request: pytest.FixtureRequest) -> tuple[str, dict[str, str], Any]:
+    match request.param:
+        case "websockets.endpoint":
+            expected = fake.uri(["wss", "ws"])
+            env_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": expected}
+        case "websockets.ssl.cert_file":
+            expected = fake.file_path()
+            env_vars = {
+                "CLOUDPIN_WEBSOCKETS_SSL_CERT_FILE": expected,
+                "CLOUDPIN_WEBSOCKETS_SSL_KEY_FILE": fake.file_path(),
+            }
+        case "metrics.otlp.endpoint":
+            expected = fake.uri(["http"])
+            env_vars = {"CLOUDPIN_METRICS_OTLP_ENDPOINT": expected}
+        case "metrics.prometheus.endpoint":
+            expected = fake.uri(["http"])
+            env_vars = {"CLOUDPIN_METRICS_PROMETHEUS_ENDPOINT": expected}
+        case "health.endpoint":
+            expected = fake.uri(["http"])
+            env_vars = {"CLOUDPIN_HEALTH_ENDPOINT": expected}
+        case _:
+            raise ValueError
+    return request.param, env_vars, expected
+
+
 def test_load_config_when_valid_urls(
     valid_urls: tuple[str, str], some_cli_config: dict[str, str]
 ) -> None:
@@ -121,18 +157,19 @@ def test_load_config_when_invalid_urls(
         load_config(cli_args)
 
 
-def test_load_config_with_environ_var(some_cli_config: dict[str, str]) -> None:
-    endpoint = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": endpoint}
+def test_load_config_with_environ_var(
+    some_cli_config: dict[str, str], config_env_vars: tuple[str, str, Any]
+) -> None:
+    attr, env_vars, expected = config_env_vars
     cli_config = some_cli_config.copy()
-    del cli_config["websockets.endpoint"]
+    cli_config.pop(attr, None)
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
-    with unittest.mock.patch.dict(os.environ, environ_vars):
+    with unittest.mock.patch.dict(os.environ, env_vars):
         result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.websockets.endpoint == endpoint
+    assert expected == functools.reduce(getattr, attr.split("."), result)
 
 
 def test_load_config_with_file(some_cli_config: dict[str, str]) -> None:

@@ -43,9 +43,11 @@ def as_value_dict(obj: Any) -> dict[str, Any]:
 
 
 def env_interpolation(
-    default: str | int | float | bool, name: str, alt: str | None = None
+    default: str | int | float | bool | None, name: str, alt: str | None = None
 ) -> str:
-    if isinstance(default, bool):
+    if default is None:
+        default = "null"
+    elif isinstance(default, bool):
         default = str(default).lower()
     if alt:
         default = f"${{oc.env:{alt},{default}}}"
@@ -72,12 +74,10 @@ def env_override[T](
     for name, val, alt in items:
         env_name = f"{prefix}_{name.upper()}" if prefix else name.upper()
         match val:
-            case str() | int() | float() | bool():
-                if default is None:
-                    updates[name] = env_interpolation(val, env_name, alt)
-                else:
-                    updates[name] = env_interpolation(default, env_name, alt)
-            case list() | None:
+            case str() | int() | float() | bool() | None:
+                val = val if default is None else default
+                updates[name] = env_interpolation(val, env_name, alt)
+            case list():
                 continue
             case _:
                 updates[name] = env_override(val, default, env_name)
