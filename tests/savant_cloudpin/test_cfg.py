@@ -14,7 +14,7 @@ from savant_cloudpin.cfg import ClientServiceConfig, ServerServiceConfig, load_c
 fake = Faker()
 
 
-def fake_zmq_url() -> str:
+def fake_zmq_endpoint() -> str:
     dir = fake.random_element(["bind", "connect"])
     schema = fake.random_element(["ipc", "tcp"])
     if schema == "tcp":
@@ -39,16 +39,16 @@ def some_cli_config() -> dict[str, str]:
                 "websockets.api_key": fake.passport_number(),
                 "websockets.ssl.cert_file": fake.file_path(),
                 "websockets.ssl.key_file": fake.file_path(),
-                "source.url": fake_zmq_url(),
-                "sink.url": fake_zmq_url(),
+                "zmq_src.endpoint": fake_zmq_endpoint(),
+                "zmq_sink.endpoint": fake_zmq_endpoint(),
             }
         case "server" if not ssl:
             return {
                 "mode": "server",
                 "websockets.endpoint": fake.uri(["wss", "ws"]),
                 "websockets.api_key": fake.passport_number(),
-                "source.url": fake_zmq_url(),
-                "sink.url": fake_zmq_url(),
+                "zmq_src.endpoint": fake_zmq_endpoint(),
+                "zmq_sink.endpoint": fake_zmq_endpoint(),
             }
         case "client":
             return {
@@ -57,8 +57,8 @@ def some_cli_config() -> dict[str, str]:
                 "websockets.api_key": fake.passport_number(),
                 "websockets.ssl.cert_file": fake.file_path(),
                 "websockets.ssl.key_file": fake.file_path(),
-                "source.url": fake_zmq_url(),
-                "sink.url": fake_zmq_url(),
+                "zmq_src.endpoint": fake_zmq_endpoint(),
+                "zmq_sink.endpoint": fake_zmq_endpoint(),
             }
         case _:
             return {}
@@ -77,7 +77,7 @@ def some_cli_config() -> dict[str, str]:
     ],
     ids="|".join,
 )
-def valid_urls(request: pytest.FixtureRequest) -> tuple[str, str]:
+def valid_zmq_endpoints(request: pytest.FixtureRequest) -> tuple[str, str]:
     return request.param
 
 
@@ -92,7 +92,7 @@ def valid_urls(request: pytest.FixtureRequest) -> tuple[str, str]:
     ],
     ids=" | ".join,
 )
-def invalid_urls(request: pytest.FixtureRequest) -> tuple[str, str]:
+def invalid_zmq_endpoints(request: pytest.FixtureRequest) -> tuple[str, str]:
     return request.param
 
 
@@ -109,48 +109,52 @@ def config_env_vars(request: pytest.FixtureRequest) -> tuple[str, dict[str, str]
     match request.param:
         case "websockets.endpoint":
             expected = fake.uri(["wss", "ws"])
-            env_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": expected}
+            env_vars = {"WEBSOCKETS_ENDPOINT": expected}
         case "websockets.ssl.cert_file":
             expected = fake.file_path()
             env_vars = {
-                "CLOUDPIN_WEBSOCKETS_SSL_CERT_FILE": expected,
-                "CLOUDPIN_WEBSOCKETS_SSL_KEY_FILE": fake.file_path(),
+                "WEBSOCKETS_SSL_CERT_FILE": expected,
+                "WEBSOCKETS_SSL_KEY_FILE": fake.file_path(),
             }
         case "metrics.otlp.endpoint":
             expected = fake.uri(["http"])
-            env_vars = {"CLOUDPIN_METRICS_OTLP_ENDPOINT": expected}
+            env_vars = {"METRICS_OTLP_ENDPOINT": expected}
         case "metrics.prometheus.endpoint":
             expected = fake.uri(["http"])
-            env_vars = {"CLOUDPIN_METRICS_PROMETHEUS_ENDPOINT": expected}
+            env_vars = {"METRICS_PROMETHEUS_ENDPOINT": expected}
         case "health.endpoint":
             expected = fake.uri(["http"])
-            env_vars = {"CLOUDPIN_HEALTH_ENDPOINT": expected}
+            env_vars = {"HEALTH_ENDPOINT": expected}
         case _:
             raise ValueError
     return request.param, env_vars, expected
 
 
-def test_load_config_when_valid_urls(
-    valid_urls: tuple[str, str], some_cli_config: dict[str, str]
+def test_load_config_when_valid_zmq_endpoints(
+    valid_zmq_endpoints: tuple[str, str], some_cli_config: dict[str, str]
 ) -> None:
-    source_url, sink_url = valid_urls
+    zmq_src_endpoint, zmq_sink_endpoint = valid_zmq_endpoints
     cli_config = some_cli_config.copy()
-    cli_config.update({"source.url": source_url, "sink.url": sink_url})
+    cli_config.update(
+        {"zmq_src.endpoint": zmq_src_endpoint, "zmq_sink.endpoint": zmq_sink_endpoint}
+    )
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
     result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.source.url == source_url
-    assert result.sink.url == sink_url
+    assert result.zmq_src.endpoint == zmq_src_endpoint
+    assert result.zmq_sink.endpoint == zmq_sink_endpoint
 
 
-def test_load_config_when_invalid_urls(
-    invalid_urls: tuple[str, str], some_cli_config: dict[str, str]
+def test_load_config_when_invalid_zmq_endpoints(
+    invalid_zmq_endpoints: tuple[str, str], some_cli_config: dict[str, str]
 ) -> None:
-    source_url, sink_url = invalid_urls
+    zmq_src_endpoint, zmq_sink_endpoint = invalid_zmq_endpoints
     cli_config = some_cli_config.copy()
-    cli_config.update({"source.url": source_url, "sink.url": sink_url})
+    cli_config.update(
+        {"zmq_src.endpoint": zmq_src_endpoint, "zmq_sink.endpoint": zmq_sink_endpoint}
+    )
     cli_args = ["=".join(arg) for arg in cli_config.items()]
 
     with pytest.raises(ValueError):
@@ -213,7 +217,7 @@ def test_load_config_that_cli_override_env(some_cli_config: dict[str, str]) -> N
 def test_load_config_that_env_override_file(some_cli_config: dict[str, str]) -> None:
     env_endpoint = fake.uri(["wss", "ws"])
     file_endpoint = fake.uri(["wss", "ws"])
-    environ_vars = {"CLOUDPIN_WEBSOCKETS_ENDPOINT": env_endpoint}
+    environ_vars = {"WEBSOCKETS_ENDPOINT": env_endpoint}
     config_path = f"/tmp{fake.file_path(extension='yml')}"
     file_mock = unittest.mock.mock_open(
         read_data=(f"websockets:\n  endpoint: {file_endpoint}"),
@@ -242,7 +246,7 @@ def test_load_config_that_env_override_file(some_cli_config: dict[str, str]) -> 
     params=[("str", "one"), ("str", "many"), ("dict", "one"), ("dict", "many")],
     ids="-".join,
 )
-def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
+def file_loglevel(request: pytest.FixtureRequest) -> Generator[str]:
     type, manifold = request.param
     count = 3 if manifold == "many" else 1
     mdls = fake.random_elements(
@@ -254,22 +258,19 @@ def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
     match type:
         case "str":
             file_content = f"""\
-                log:
-                    spec: {expected}
+                loglevel: {expected}
             """
         case _ if count == 1:
             file_content = f"""\
-                log:
-                    spec:
-                        {mdls[0]}: {lvls[0]}
+                loglevel:
+                    {mdls[0]}: {lvls[0]}
             """
         case _:
             file_content = f"""\
-                log:
-                    spec:
-                        {mdls[0]}: {lvls[0]}
-                        {mdls[1]}: {lvls[1]}
-                        {mdls[2]}: {lvls[2]}
+                loglevel:
+                    {mdls[0]}: {lvls[0]}
+                    {mdls[1]}: {lvls[1]}
+                    {mdls[2]}: {lvls[2]}
             """
 
     file_content = textwrap.dedent(file_content)
@@ -283,11 +284,11 @@ def file_log_spec(request: pytest.FixtureRequest) -> Generator[str]:
 
 @unittest.mock.patch.dict(os.environ, {}, clear=True)
 def test_load_config_with_log_spec_in_file(
-    some_cli_config: dict[str, str], file_log_spec: str
+    some_cli_config: dict[str, str], file_loglevel: str
 ) -> None:
     cli_args = ["=".join(arg) for arg in some_cli_config.items()]
 
     result = load_config(cli_args)
 
     assert isinstance(result, (ServerServiceConfig, ClientServiceConfig))
-    assert result.log.spec == file_log_spec
+    assert result.loglevel == file_loglevel

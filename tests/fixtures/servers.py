@@ -6,11 +6,11 @@ import pytest_asyncio
 
 from savant_cloudpin.cfg import (
     ClientServiceConfig,
-    ReaderConfig,
     ServerServiceConfig,
     ServerSSLConfig,
     ServerWSConfig,
-    WriterConfig,
+    ZMQReaderConfig,
+    ZMQWriterConfig,
 )
 from savant_cloudpin.services import ServerService, create_service
 from tests.helpers.ssl import SignedCertKey
@@ -18,10 +18,10 @@ from tests.helpers.ssl import SignedCertKey
 
 @pytest.fixture
 def server_ws_config(
-    ws_url: str, api_key: str, server_ssl_config: ServerSSLConfig
+    ws_endpoint: str, api_key: str, server_ssl_config: ServerSSLConfig
 ) -> ServerWSConfig:
     return ServerWSConfig(
-        endpoint=ws_url,
+        endpoint=ws_endpoint,
         api_key=api_key,
         ssl=ServerSSLConfig(
             ca_file=server_ssl_config.ca_file,
@@ -34,29 +34,29 @@ def server_ws_config(
 
 @pytest.fixture
 def server_config(
-    server_source_config: ReaderConfig,
-    server_sink_config: WriterConfig,
+    server_zmq_src_config: ZMQReaderConfig,
+    server_zmq_sink_config: ZMQWriterConfig,
     server_ws_config: ServerWSConfig,
 ) -> ServerServiceConfig:
     return ServerServiceConfig(
         io_timeout=0.01,
         websockets=server_ws_config,
-        source=server_source_config,
-        sink=server_sink_config,
+        zmq_src=server_zmq_src_config,
+        zmq_sink=server_zmq_sink_config,
     )
 
 
 @pytest.fixture
 def var_server_config(
-    var_source_config: ReaderConfig,
-    var_sink_config: WriterConfig,
+    var_zmq_src_config: ZMQReaderConfig,
+    var_zmq_sink_config: ZMQWriterConfig,
     server_ws_config: ServerWSConfig,
 ) -> ServerServiceConfig:
     return ServerServiceConfig(
         io_timeout=0.01,
         websockets=server_ws_config,
-        source=var_source_config,
-        sink=var_sink_config,
+        zmq_src=var_zmq_src_config,
+        zmq_sink=var_zmq_sink_config,
     )
 
 

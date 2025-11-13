@@ -12,10 +12,10 @@ from savant_cloudpin.cfg import (
     MetricsConfig,
     OTLPMetricConfig,
     PrometheusConfig,
-    ReaderConfig,
     ServerServiceConfig,
     ServerWSConfig,
-    WriterConfig,
+    ZMQReaderConfig,
+    ZMQWriterConfig,
 )
 from savant_cloudpin.observability import serve_metrics
 from savant_cloudpin.services import create_service
@@ -28,52 +28,52 @@ from tests.helpers.pipelines import (
     run_infinite_write,
 )
 
-SERVER_SOURCE_URL = os.environ.get(
-    "TEST_CLOUDPIN_SERVER_SOURCE_URL", "bind:ipc://tmp/test_server_source"
+SERVER_ZMQ_SRC_ENDPOINT = os.environ.get(
+    "SERVER_ZMQ_SRC_ENDPOINT", "bind:ipc://tmp/test_server_source"
 )
-SERVER_SINK_URL = os.environ.get(
-    "TEST_CLOUDPIN_SERVER_SINK_URL", "bind:ipc://tmp/test_server_sink"
+SERVER_ZMQ_SINK_ENDPOINT = os.environ.get(
+    "SERVER_ZMQ_SINK_ENDPOINT", "bind:ipc://tmp/test_server_sink"
 )
-CLIENT_SOURCE_URL = os.environ.get(
-    "TEST_CLOUDPIN_CLIENT_SOURCE_URL", "bind:ipc://tmp/test_client_source"
+CLIENT_ZMQ_SRC_ENDPOINT = os.environ.get(
+    "CLIENT_ZMQ_SRC_ENDPOINT", "bind:ipc://tmp/test_client_source"
 )
-CLIENT_SINK_URL = os.environ.get(
-    "TEST_CLOUDPIN_CLIENT_SINK_URL", "bind:ipc://tmp/test_client_sink"
+CLIENT_ZMQ_SINK_ENDPOINT = os.environ.get(
+    "CLIENT_ZMQ_SINK_ENDPOINT", "bind:ipc://tmp/test_client_sink"
 )
-WS_URL = os.environ.get("TEST_CLOUDPIN_WEBSOCKET_URL", "ws://127.0.0.1:15000")
-API_KEY = os.environ.get("TEST_CLOUDPIN_API_KEY", "super_secret")
-CLIENT_PROMETHEUS_URL = os.environ.get(
-    "TEST_CLOUDPIN_CLIENT_PROMETHEUS_URL", "http://0.0.0.0:8081"
+WEBSOCKETS_ENDPOINT = os.environ.get("WEBSOCKETS_ENDPOINT", "ws://127.0.0.1:15000")
+API_KEY = os.environ.get("API_KEY", "super_secret")
+CLIENT_METRICS_PROMETHEUS_ENDPOINT = os.environ.get(
+    "CLIENT_METRICS_PROMETHEUS_ENDPOINT", "http://0.0.0.0:8081"
 )
-SERVER_PROMETHEUS_URL = os.environ.get(
-    "TEST_CLOUDPIN_SERVER_PROMETHEUS_URL", "http://0.0.0.0:8082"
+SERVER_METRICS_PROMETHEUS_ENDPOINT = os.environ.get(
+    "SERVER_METRICS_PROMETHEUS_ENDPOINT", "http://0.0.0.0:8082"
 )
-OTEL_TRACER_URL = os.environ.get(
+OTLP_TRACES_ENDPOINT = os.environ.get(
     "OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", "http://otlp-collector:4318/v1/traces"
 )
 CLIENT_CONFIG = ClientServiceConfig(
     websockets=ClientWSConfig(
-        endpoint=WS_URL,
+        endpoint=WEBSOCKETS_ENDPOINT,
         api_key=API_KEY,
         ssl=ClientSSLConfig(insecure=True, check_hostname=False),
     ),
-    source=ReaderConfig(url=CLIENT_SOURCE_URL),
-    sink=WriterConfig(url=CLIENT_SINK_URL),
+    zmq_src=ZMQReaderConfig(endpoint=CLIENT_ZMQ_SRC_ENDPOINT),
+    zmq_sink=ZMQWriterConfig(endpoint=CLIENT_ZMQ_SINK_ENDPOINT),
     metrics=MetricsConfig(
-        prometheus=PrometheusConfig(endpoint=CLIENT_PROMETHEUS_URL),
-        otlp=OTLPMetricConfig(endpoint=OTEL_TRACER_URL),
+        prometheus=PrometheusConfig(endpoint=CLIENT_METRICS_PROMETHEUS_ENDPOINT),
+        otlp=OTLPMetricConfig(endpoint=OTLP_TRACES_ENDPOINT),
     ),
 )
 SERVER_CONFIG = ServerServiceConfig(
     websockets=ServerWSConfig(
-        endpoint=WS_URL,
+        endpoint=WEBSOCKETS_ENDPOINT,
         api_key=API_KEY,
     ),
-    sink=WriterConfig(url=SERVER_SINK_URL),
-    source=ReaderConfig(url=SERVER_SOURCE_URL),
+    zmq_sink=ZMQWriterConfig(endpoint=SERVER_ZMQ_SINK_ENDPOINT),
+    zmq_src=ZMQReaderConfig(endpoint=SERVER_ZMQ_SRC_ENDPOINT),
     metrics=MetricsConfig(
-        prometheus=PrometheusConfig(endpoint=SERVER_PROMETHEUS_URL),
-        otlp=OTLPMetricConfig(endpoint=OTEL_TRACER_URL),
+        prometheus=PrometheusConfig(endpoint=SERVER_METRICS_PROMETHEUS_ENDPOINT),
+        otlp=OTLPMetricConfig(endpoint=OTLP_TRACES_ENDPOINT),
     ),
 )
 
@@ -86,8 +86,8 @@ match sys.argv[1]:
             async with (
                 handle_signals() as handler,
                 run_identity_pipeline(
-                    source_url=opposite_dir_url(SERVER_SINK_URL),
-                    sink_url=opposite_dir_url(SERVER_SOURCE_URL),
+                    zmq_src_endpoint=opposite_dir_url(SERVER_ZMQ_SINK_ENDPOINT),
+                    zmq_sink_endpoint=opposite_dir_url(SERVER_ZMQ_SRC_ENDPOINT),
                 ),
             ):
                 handler.append(stopped.set)
@@ -95,22 +95,22 @@ match sys.argv[1]:
     case "infinite_write":
 
         async def serve() -> None:
-            init_telemetry_tracer(OTEL_TRACER_URL)
+            init_telemetry_tracer(OTLP_TRACES_ENDPOINT)
             stopped = Event()
             async with (
                 handle_signals() as handler,
-                run_infinite_write(opposite_dir_url(CLIENT_SOURCE_URL)),
+                run_infinite_write(opposite_dir_url(CLIENT_ZMQ_SRC_ENDPOINT)),
             ):
                 handler.append(stopped.set)
                 await stopped.wait()
     case "infinite_read":
 
         async def serve() -> None:
-            init_telemetry_tracer(OTEL_TRACER_URL)
+            init_telemetry_tracer(OTLP_TRACES_ENDPOINT)
             stopped = Event()
             async with (
                 handle_signals() as handler,
-                run_infinite_read(opposite_dir_url(CLIENT_SINK_URL)),
+                run_infinite_read(opposite_dir_url(CLIENT_ZMQ_SINK_ENDPOINT)),
             ):
                 handler.append(stopped.set)
                 await stopped.wait()

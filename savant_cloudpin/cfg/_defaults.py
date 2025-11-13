@@ -6,11 +6,11 @@ from savant_cloudpin.cfg._models import (
     MetricsConfig,
     OTLPMetricConfig,
     PrometheusConfig,
-    ReaderConfig,
     ServerServiceConfig,
     ServerSSLConfig,
     ServerWSConfig,
-    WriterConfig,
+    ZMQReaderConfig,
+    ZMQWriterConfig,
 )
 
 DEFAULT_LOAD_CONFIG = dict(
@@ -18,11 +18,11 @@ DEFAULT_LOAD_CONFIG = dict(
     mode="client",
 )
 
-DEFAULT_SOURCE_CONFIG = ReaderConfig(
-    url="???",
+DEFAULT_ZMQ_SRC_CONFIG = ZMQReaderConfig(
+    endpoint="???",
 )
-DEFAULT_SINK_CONFIG = WriterConfig(
-    url="???",
+DEFAULT_ZMQ_SINK_CONFIG = ZMQWriterConfig(
+    endpoint="???",
 )
 
 DEFAULT_HEALTH_CONFIG = HealthConfig(endpoint="???")
@@ -38,8 +38,8 @@ DEFAULT_CLIENT_CONFIG = ClientServiceConfig(
         api_key="???",
         ssl=ClientSSLConfig(),
     ),
-    source=DEFAULT_SOURCE_CONFIG,
-    sink=DEFAULT_SINK_CONFIG,
+    zmq_src=DEFAULT_ZMQ_SRC_CONFIG,
+    zmq_sink=DEFAULT_ZMQ_SINK_CONFIG,
     health=DEFAULT_HEALTH_CONFIG,
     metrics=DEFAULT_METRICS_CONFIG,
 )
@@ -53,8 +53,8 @@ DEFAULT_SERVER_CONFIG = ServerServiceConfig(
             key_file="???",
         ),
     ),
-    source=DEFAULT_SOURCE_CONFIG,
-    sink=DEFAULT_SINK_CONFIG,
+    zmq_src=DEFAULT_ZMQ_SRC_CONFIG,
+    zmq_sink=DEFAULT_ZMQ_SINK_CONFIG,
     health=DEFAULT_HEALTH_CONFIG,
     metrics=DEFAULT_METRICS_CONFIG,
 )

@@ -19,14 +19,14 @@ logger = get_logger(__package__ or __name__)
 class ClientService(PumpServiceBase["ClientService"]):
     def __init__(self, config: ClientServiceConfig) -> None:
         super().__init__(config, Measurements("Client", config.metrics))
-        ws_url = config.websockets.endpoint
-        scheme = urlparse(ws_url).scheme
+        ws_endpoint = config.websockets.endpoint
+        scheme = urlparse(ws_endpoint).scheme
         if not config.websockets.ssl.insecure and scheme != "wss":
             raise ValueError(
                 f"Invalid WebSocket URL scheme '{scheme}'. 'wss' is expected"
             )
 
-        self._server_url = ws_url
+        self._ws_endpoint = ws_endpoint
         self._ssl = config.websockets.ssl
         self._api_key = config.websockets.api_key
         self._reconnect_timeout = config.websockets.reconnect_timeout
@@ -41,6 +41,7 @@ class ClientService(PumpServiceBase["ClientService"]):
             ctx.load_verify_locations(self._ssl.ca_file)
         if self._ssl.cert_file and self._ssl.key_file:
             ctx.load_cert_chain(self._ssl.cert_file, self._ssl.key_file)
+        else:
             logger.warning("Continue without client certificate authentication")
         return ctx
 
@@ -50,7 +51,7 @@ class ClientService(PumpServiceBase["ClientService"]):
 
             _, listener = await ws_connect(
                 ws_listener_factory=self._create_listener,
-                url=self._server_url,
+                url=self._ws_endpoint,
                 ssl_context=self._ssl_context,
                 extra_headers={API_KEY_HEADER: self._api_key},
             )
@@ -62,7 +63,7 @@ class ClientService(PumpServiceBase["ClientService"]):
             return
         except ssl.SSLCertVerificationError as orig_err:
             self._measurements.increment_ws_connection_errors()
-            err = ConnectionError("Error connecting WS. Certificate plroblems")
+            err = ConnectionError("Error connecting WS. Certificate problems")
             raise err from orig_err
         except WSError as orig_err:
             self._measurements.increment_ws_connection_errors()
@@ -70,7 +71,7 @@ class ClientService(PumpServiceBase["ClientService"]):
             raise err from orig_err
         except OSError:
             self._measurements.increment_ws_connection_errors()
-            logger.exception(f"Fail to connect to {self._server_url}")
+            logger.exception(f"Fail to connect to {self._ws_endpoint}")
             return
 
         self._measurements.increment_ws_connection_errors()
@@ -86,9 +87,9 @@ class ClientService(PumpServiceBase["ClientService"]):
     @override
     async def _serve(self) -> None:
         try:
-            with self._source, self._sink:
-                self._source.start()
-                self._sink.start()
+            with self._zmq_src, self._zmq_sink:
+                self._zmq_src.start()
+                self._zmq_sink.start()
 
                 self.started.set()
 

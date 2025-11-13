@@ -46,7 +46,7 @@ def reset_meter_provider() -> None:
 @pytest.mark.usefixtures("reset_meter_provider")
 async def test_prometheus(
     prometheus_config: PrometheusConfig,
-    prometheus_base_url: str,
+    prometheus_base_endpoint: str,
     service_type: ServiceSide,
     client_session: ClientSession,
 ) -> None:
@@ -59,7 +59,7 @@ async def test_prometheus(
 
         responses = list[tuple[int, str]]()
         for _ in range(5):
-            response = await client_session.get(f"{prometheus_base_url}/metrics")
+            response = await client_session.get(f"{prometheus_base_endpoint}/metrics")
             responses.append((response.status, await response.text()))
             await asyncio.sleep(0.1)
 
@@ -74,12 +74,12 @@ async def test_prometheus(
 @pytest.mark.vcr()
 async def test_otlp_metrics(
     otlp_metric_config: OTLPMetricConfig,
-    otlp_base_url: str,
+    otlp_base_endpoint: str,
     service_type: ServiceSide,
     vcr_cassette: Cassette,
 ) -> None:
     expected_status = {"code": 200, "message": "OK"}
-    expected_url = f"{otlp_base_url}/v1/metrics"
+    expected_url = f"{otlp_base_endpoint}/v1/metrics"
     config = MetricsConfig(otlp=otlp_metric_config)
     measurements = Measurements(service_type, config)
     async with serve_metrics(config):
@@ -106,11 +106,11 @@ def test_measurements_for_video_frame(delay_mock: Mock) -> None:
     msg = MessageData.fake_video_frame().to_message()
 
     with freeze_time("2025-11-11", tz_offset=0) as frozen_time:
-        client_measurements.add_source_message_measure(msg)
+        client_measurements.add_src_message_measure(msg)
         frozen_time.tick(delta=timedelta(seconds=2))
         server_measurements.add_sink_message_measure(msg)
         frozen_time.tick(delta=timedelta(seconds=10))
-        server_measurements.add_source_message_measure(msg)
+        server_measurements.add_src_message_measure(msg)
         frozen_time.tick(delta=timedelta(seconds=3))
         client_measurements.add_sink_message_measure(msg)
 

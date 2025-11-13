@@ -22,13 +22,13 @@ fake = Faker()
 async def test_identity_pipeline_with_client_variants(
     var_client: ClientService,
     server: ServerService,
-    var_writer: NonBlockingWriter,
-    var_reader: NonBlockingReader,
+    var_zmq_writer: NonBlockingWriter,
+    var_zmq_reader: NonBlockingReader,
 ) -> None:
     data = MessageData.fake()
 
-    var_writer.start()
-    var_reader.start()
+    var_zmq_writer.start()
+    var_zmq_reader.start()
 
     asyncio.create_task(server.run())
     await server.started.wait()
@@ -36,8 +36,8 @@ async def test_identity_pipeline_with_client_variants(
     asyncio.create_task(var_client.run())
     await var_client.started.wait()
 
-    var_writer.send_message(*data)
-    result = await helpers.zmq.receive_result(var_reader)
+    var_zmq_writer.send_message(*data)
+    result = await helpers.zmq.receive_result(var_zmq_reader)
 
     assert isinstance(result, ReaderResultMessage)
     assert data.is_same(result)
@@ -48,13 +48,13 @@ async def test_identity_pipeline_with_client_variants(
 async def test_identity_pipeline_with_server_variants(
     client: ClientService,
     var_server: ServerService,
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
 ) -> None:
     data = MessageData.fake()
 
-    client_writer.start()
-    client_reader.start()
+    client_zmq_writer.start()
+    client_zmq_reader.start()
 
     asyncio.create_task(var_server.run())
     await var_server.started.wait()
@@ -62,8 +62,8 @@ async def test_identity_pipeline_with_server_variants(
     asyncio.create_task(client.run())
     await client.started.wait()
 
-    client_writer.send_message(*data)
-    result = await helpers.zmq.receive_result(client_reader)
+    client_zmq_writer.send_message(*data)
+    result = await helpers.zmq.receive_result(client_zmq_reader)
 
     assert isinstance(result, ReaderResultMessage)
     assert data.is_same(result)
@@ -103,16 +103,16 @@ async def test_identity_pipeline_when_invalid_server_cert(
 @pytest.mark.usefixtures("started_client_side", "identity_pipeline")
 async def test_identity_pipeline_when_same_cert_server(
     same_cert_server: ServerService,
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
 ) -> None:
     data = MessageData.fake()
 
     asyncio.create_task(same_cert_server.run())
     await same_cert_server.started.wait()
 
-    client_writer.send_message(*data)
-    result = await helpers.zmq.receive_result(client_reader)
+    client_zmq_writer.send_message(*data)
+    result = await helpers.zmq.receive_result(client_zmq_reader)
 
     assert isinstance(result, ReaderResultMessage)
     assert data.is_same(result)
@@ -137,8 +137,8 @@ async def test_identity_pipeline_when_invalid_apikey(
 @pytest.mark.usefixtures("started_client_side", "identity_pipeline")
 async def test_identity_pipeline_when_reconnect(
     server_config: ServerServiceConfig,
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
 ) -> None:
     first_data = MessageData.fake()
     reconnect_data = MessageData.fake()
@@ -147,19 +147,19 @@ async def test_identity_pipeline_when_reconnect(
         asyncio.create_task(server.run())
         await server.started.wait()
 
-        client_writer.send_message(*first_data)
-        first_res = await helpers.zmq.receive_result(client_reader)
+        client_zmq_writer.send_message(*first_data)
+        first_res = await helpers.zmq.receive_result(client_zmq_reader)
 
-    client_writer.send_message(*reconnect_data)
-    client_writer.send_message(*reconnect_data)
+    client_zmq_writer.send_message(*reconnect_data)
+    client_zmq_writer.send_message(*reconnect_data)
 
     async with ServerService(server_config) as server:
         asyncio.create_task(server.run())
         await server.started.wait()
 
-        client_writer.send_message(*reconnect_data)
-        client_writer.send_message(*reconnect_data)
-        reconnect_res = await helpers.zmq.receive_result(client_reader)
+        client_zmq_writer.send_message(*reconnect_data)
+        client_zmq_writer.send_message(*reconnect_data)
+        reconnect_res = await helpers.zmq.receive_result(client_zmq_reader)
 
     assert isinstance(first_res, ReaderResultMessage)
     assert first_data.is_same(first_res)
@@ -172,13 +172,13 @@ async def test_identity_pipeline_when_reconnect(
 async def test_identity_pipeline_when_nossl(
     nossl_client: ClientService,
     nossl_server: ServerService,
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
 ) -> None:
     data = MessageData.fake()
 
-    client_writer.start()
-    client_reader.start()
+    client_zmq_writer.start()
+    client_zmq_reader.start()
 
     asyncio.create_task(nossl_server.run())
     await nossl_server.started.wait()
@@ -186,8 +186,8 @@ async def test_identity_pipeline_when_nossl(
     asyncio.create_task(nossl_client.run())
     await nossl_client.started.wait()
 
-    client_writer.send_message(*data)
-    result = await helpers.zmq.receive_result(client_reader)
+    client_zmq_writer.send_message(*data)
+    result = await helpers.zmq.receive_result(client_zmq_reader)
 
     assert isinstance(result, ReaderResultMessage)
     assert data.is_same(result)
@@ -198,14 +198,14 @@ async def test_identity_pipeline_when_nossl(
 async def test_identity_pipeline_when_sequence(
     client: ClientService,
     server: ServerService,
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
 ) -> None:
     count = fake.random_int(8, 32)
     sequence = [MessageData.fake() for _ in range(count)]
 
-    client_writer.start()
-    client_reader.start()
+    client_zmq_writer.start()
+    client_zmq_reader.start()
 
     asyncio.create_task(server.run())
     await server.started.wait()
@@ -214,10 +214,10 @@ async def test_identity_pipeline_when_sequence(
     await client.started.wait()
 
     results_sink = asyncio.create_task(
-        helpers.zmq.receive_results(client_reader, count, timeout=10)
+        helpers.zmq.receive_results(client_zmq_reader, count, timeout=10)
     )
     for data in sequence:
-        client_writer.send_message(*data)
+        client_zmq_writer.send_message(*data)
     results = await results_sink
 
     assert len(results) == count
@@ -238,15 +238,15 @@ async def test_identity_pipeline_that_pause_under_pressure(
     pause_writing_mock: Mock,
     client: ClientService,
     server: ServerService,
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
 ) -> None:
     pause_writing_mock.side_effect = original_pause_writing
     count = 1000
     sequence = [MessageData.fake(large=True) for _ in range(count)]
 
-    client_writer.start()
-    client_reader.start()
+    client_zmq_writer.start()
+    client_zmq_reader.start()
 
     asyncio.create_task(server.run())
     await server.started.wait()
@@ -255,10 +255,10 @@ async def test_identity_pipeline_that_pause_under_pressure(
     await client.started.wait()
 
     results_sink = asyncio.create_task(
-        helpers.zmq.receive_results(client_reader, count, timeout=30)
+        helpers.zmq.receive_results(client_zmq_reader, count, timeout=30)
     )
     for data in sequence:
-        client_writer.send_message(*data)
+        client_zmq_writer.send_message(*data)
         await asyncio.sleep(0)
     results = await results_sink
 
@@ -269,15 +269,15 @@ async def test_identity_pipeline_that_pause_under_pressure(
 
 
 @pytest.fixture(params=["server", "client"])
-def any_source_writer(
+def any_zmq_src_writer(
     request: pytest.FixtureRequest,
-    server_writer: NonBlockingWriter,
-    client_writer: NonBlockingWriter,
+    server_zmq_writer: NonBlockingWriter,
+    client_zmq_writer: NonBlockingWriter,
 ) -> NonBlockingWriter:
     if request.param == "server":
-        return server_writer
+        return server_zmq_writer
     else:
-        return client_writer
+        return client_zmq_writer
 
 
 @pytest.mark.asyncio
@@ -285,7 +285,7 @@ def any_source_writer(
 async def test_when_sink_buffer_exceeded(
     increment_drops_mock: Mock,
     client: ClientService,
-    any_source_writer: NonBlockingWriter,
+    any_zmq_src_writer: NonBlockingWriter,
     server: ServerService,
 ) -> None:
     increment_drops_mock.side_effect = original_increment_drops
@@ -293,7 +293,7 @@ async def test_when_sink_buffer_exceeded(
     sequence = [MessageData.fake() for _ in range(count)]
 
     # Source is sending messages but there are no sink readers started
-    any_source_writer.start()
+    any_zmq_src_writer.start()
 
     asyncio.create_task(server.run())
     await server.started.wait()
@@ -303,7 +303,7 @@ async def test_when_sink_buffer_exceeded(
 
     for data in sequence:
         await asyncio.sleep(0)
-        any_source_writer.send_message(*data)
+        any_zmq_src_writer.send_message(*data)
 
     await asyncio.sleep(1)
 
@@ -313,19 +313,19 @@ async def test_when_sink_buffer_exceeded(
 @pytest.mark.asyncio
 async def test_messages_at_every_ends(
     server: ServerService,
-    server_writer: NonBlockingWriter,
-    server_reader: NonBlockingReader,
+    server_zmq_writer: NonBlockingWriter,
+    server_zmq_reader: NonBlockingReader,
     client: ClientService,
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
 ) -> None:
     original_data = MessageData.fake()
     processed_data = MessageData.fake()
 
-    server_writer.start()
-    server_reader.start()
-    client_writer.start()
-    client_reader.start()
+    server_zmq_writer.start()
+    server_zmq_reader.start()
+    client_zmq_writer.start()
+    client_zmq_reader.start()
 
     asyncio.create_task(server.run())
     await server.started.wait()
@@ -333,10 +333,10 @@ async def test_messages_at_every_ends(
     asyncio.create_task(client.run())
     await client.started.wait()
 
-    client_writer.send_message(*original_data)
-    server_input = await helpers.zmq.receive_result(server_reader)
-    server_writer.send_message(*processed_data)
-    client_output = await helpers.zmq.receive_result(client_reader, timeout=3)
+    client_zmq_writer.send_message(*original_data)
+    server_input = await helpers.zmq.receive_result(server_zmq_reader)
+    server_zmq_writer.send_message(*processed_data)
+    client_output = await helpers.zmq.receive_result(client_zmq_reader, timeout=3)
 
     assert isinstance(server_input, ReaderResultMessage)
     assert original_data.is_same(server_input)

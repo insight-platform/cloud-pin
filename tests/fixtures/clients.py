@@ -10,8 +10,8 @@ from savant_cloudpin.cfg import (
     ClientServiceConfig,
     ClientSSLConfig,
     ClientWSConfig,
-    ReaderConfig,
-    WriterConfig,
+    ZMQReaderConfig,
+    ZMQWriterConfig,
 )
 from savant_cloudpin.services import ClientService, create_service
 from savant_cloudpin.zmq import NonBlockingReader, NonBlockingWriter
@@ -22,10 +22,10 @@ fake = Faker()
 
 @pytest.fixture
 def client_ws_config(
-    ws_url: str, api_key: str, client_ssl_config: ClientSSLConfig
+    ws_endpoint: str, api_key: str, client_ssl_config: ClientSSLConfig
 ) -> ClientWSConfig:
     return ClientWSConfig(
-        endpoint=ws_url,
+        endpoint=ws_endpoint,
         api_key=api_key,
         ssl=client_ssl_config,
         reconnect_timeout=0.01,
@@ -34,29 +34,29 @@ def client_ws_config(
 
 @pytest.fixture
 def client_config(
-    client_source_config: ReaderConfig,
-    client_sink_config: WriterConfig,
+    client_zmq_src_config: ZMQReaderConfig,
+    client_zmq_sink_config: ZMQWriterConfig,
     client_ws_config: ClientWSConfig,
 ) -> ClientServiceConfig:
     return ClientServiceConfig(
         io_timeout=0.01,
         websockets=client_ws_config,
-        source=client_source_config,
-        sink=client_sink_config,
+        zmq_src=client_zmq_src_config,
+        zmq_sink=client_zmq_sink_config,
     )
 
 
 @pytest.fixture
 def var_client_config(
-    var_source_config: ReaderConfig,
-    var_sink_config: WriterConfig,
+    var_zmq_src_config: ZMQReaderConfig,
+    var_zmq_sink_config: ZMQWriterConfig,
     client_ws_config: ClientWSConfig,
 ) -> ClientServiceConfig:
     return ClientServiceConfig(
         io_timeout=0.01,
         websockets=client_ws_config,
-        source=var_source_config,
-        sink=var_sink_config,
+        zmq_src=var_zmq_src_config,
+        zmq_sink=var_zmq_sink_config,
     )
 
 
@@ -112,12 +112,12 @@ async def nossl_client(
 
 @pytest_asyncio.fixture
 async def started_client_side(
-    client_writer: NonBlockingWriter,
-    client_reader: NonBlockingReader,
+    client_zmq_writer: NonBlockingWriter,
+    client_zmq_reader: NonBlockingReader,
     client: ClientService,
 ) -> None:
-    client_writer.start()
-    client_reader.start()
+    client_zmq_writer.start()
+    client_zmq_reader.start()
 
     asyncio.create_task(client.run())
     await client.started.wait()
