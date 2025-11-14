@@ -17,3 +17,5 @@ where channels:
   * Pipeline sink (ZMQ Dealer) - 3
   * Pipeline source (ZMQ Router) - 4
   * Downstream bridge (WS) - 5
+
+There are [samples and benchmarks](samples/README.md)

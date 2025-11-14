@@ -7,11 +7,8 @@ from typing import Any, cast
 
 from omegaconf import DictConfig
 
-PREFIX_ENV_VAR = "CLOUDPIN_ENV_PREFIX"
-_CUSTOM_ENV_PREFIX = os.environ.get(PREFIX_ENV_VAR, "").strip()
-_HAS_ENV_PREFIX = _CUSTOM_ENV_PREFIX.strip().lower() not in ("none", "false", "0")
-ENV_PREFIX = os.environ.get(PREFIX_ENV_VAR, "CLOUDPIN") if _HAS_ENV_PREFIX else ""
-META_ALT_ENV_VAR = "cloudpin_alt_env_var"
+ENV_PREFIX = os.environ.get("CLOUDPIN_ENV_PREFIX", None)
+ALT_ENV = "cloudpin_alt_env"
 
 
 def to_map_config(
@@ -64,7 +61,7 @@ def env_override[T](
     updates = dict[str, Any]()
     if dataclasses.is_dataclass(obj):
         items = (
-            (f.name, getattr(obj, f.name), f.metadata.get(META_ALT_ENV_VAR, None))
+            (f.name, getattr(obj, f.name), f.metadata.get(ALT_ENV, None))
             for f in dataclasses.fields(obj)
         )
     elif isinstance(obj, dict):

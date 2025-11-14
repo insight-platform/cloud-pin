@@ -211,7 +211,7 @@ class Measurements:
     def add_sink_message_measure(self, message: Message) -> None:
         self._add_message_measure(message, socket="Sink")
 
-    def add_source_message_measure(self, message: Message) -> None:
+    def add_src_message_measure(self, message: Message) -> None:
         self._add_message_measure(message, socket="Source")
 
     def _add_message_measure(self, message: Message, socket: ZMQSocket) -> None:
@@ -294,7 +294,7 @@ class Measurements:
         self.metrics.consumed_ws_reading_capacity.record(consumed, attrs)
         self.metrics.left_ws_reading_capacity.record(total - consumed, attrs)
 
-    def measure_source_message_data(self, frame: bytes) -> None:
+    def measure_src_message_data(self, frame: bytes) -> None:
         self._measure_message_data(frame, "Source")
 
     def measure_sink_message_data(self, frame: bytes) -> None:

@@ -3,14 +3,14 @@ from typing import Protocol, Self
 
 from savant_rs import zmq
 
-from savant_cloudpin.cfg._utils import META_ALT_ENV_VAR, to_map_config
+from savant_cloudpin.cfg._utils import ALT_ENV, to_map_config
 
 SENSITIVE_KEYS = ("api_key",)
 
 
 @dataclass
-class ReaderConfig:
-    url: str
+class ZMQReaderConfig:
+    endpoint: str
     results_queue_size: int = 100
     receive_timeout: int | None = None
     receive_hwm: int | None = None
@@ -21,17 +21,19 @@ class ReaderConfig:
     source_blacklist_ttl: int | None = None
 
     def as_router(self) -> Self:
-        return replace(self, url="router+" + self.url.split("+")[-1])
+        return replace(self, endpoint="router+" + self.endpoint.split("+")[-1])
 
     def to_args(self) -> tuple[zmq.ReaderConfig, int]:
-        cfg = zmq.ReaderConfigBuilder(self.url)
-        cfg.with_map_config(to_map_config(self, excluded=("url", "results_queue_size")))
+        cfg = zmq.ReaderConfigBuilder(self.endpoint)
+        cfg.with_map_config(
+            to_map_config(self, excluded=("endpoint", "results_queue_size"))
+        )
         return cfg.build(), self.results_queue_size
 
 
 @dataclass
-class WriterConfig:
-    url: str
+class ZMQWriterConfig:
+    endpoint: str
     max_inflight_messages: int = 100
     send_timeout: int | None = None
     send_retries: int | None = None
@@ -42,12 +44,12 @@ class WriterConfig:
     fix_ipc_permissions: str | None = None
 
     def as_dealer(self) -> Self:
-        return replace(self, url="dealer+" + self.url.split("+")[-1])
+        return replace(self, endpoint="dealer+" + self.endpoint.split("+")[-1])
 
     def to_args(self) -> tuple[zmq.WriterConfig, int]:
-        cfg = zmq.WriterConfigBuilder(self.url)
+        cfg = zmq.WriterConfigBuilder(self.endpoint)
         cfg.with_map_config(
-            to_map_config(self, excluded=("url", "max_inflight_messages"))
+            to_map_config(self, excluded=("endpoint", "max_inflight_messages"))
         )
         return cfg.build(), self.max_inflight_messages
 
@@ -91,9 +93,7 @@ class HealthConfig:
 
 @dataclass
 class OTLPMetricConfig:
-    endpoint: str = field(
-        metadata={META_ALT_ENV_VAR: "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT"}
-    )
+    endpoint: str = field(metadata={ALT_ENV: "OTEL_EXPORTER_OTLP_METRICS_ENDPOINT"})
     export_timeout: float = 3.0
     custom_path: bool = False
 
@@ -125,16 +125,11 @@ class MetricsConfig:
     )
 
 
-@dataclass
-class LogConfig:
-    spec: str | None = field(default="warning", metadata={META_ALT_ENV_VAR: "LOGLEVEL"})
-
-
 class BaseServiceConfig(Protocol):
-    source: ReaderConfig
-    sink: WriterConfig
+    zmq_src: ZMQReaderConfig
+    zmq_sink: ZMQWriterConfig
     io_timeout: float
-    log: LogConfig
+    loglevel: str | None = field(default="warning", metadata={ALT_ENV: "LOGLEVEL"})
     health: HealthConfig | None
     metrics: MetricsConfig | None
 
@@ -142,10 +137,10 @@ class BaseServiceConfig(Protocol):
 @dataclass
 class ServerServiceConfig(BaseServiceConfig):
     websockets: ServerWSConfig
-    source: ReaderConfig
-    sink: WriterConfig
+    zmq_src: ZMQReaderConfig
+    zmq_sink: ZMQWriterConfig
     io_timeout: float = 0.1
-    log: LogConfig = field(default_factory=LogConfig)
+    loglevel: str | None = field(default="warning", metadata={ALT_ENV: "LOGLEVEL"})
     health: HealthConfig | None = None
     metrics: MetricsConfig | None = None
 
@@ -153,9 +148,9 @@ class ServerServiceConfig(BaseServiceConfig):
 @dataclass
 class ClientServiceConfig(BaseServiceConfig):
     websockets: ClientWSConfig
-    source: ReaderConfig
-    sink: WriterConfig
+    zmq_src: ZMQReaderConfig
+    zmq_sink: ZMQWriterConfig
     io_timeout: float = 0.1
-    log: LogConfig = field(default_factory=LogConfig)
+    loglevel: str | None = field(default="warning", metadata={ALT_ENV: "LOGLEVEL"})
     health: HealthConfig | None = None
     metrics: MetricsConfig | None = None

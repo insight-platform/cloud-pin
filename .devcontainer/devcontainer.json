@@ -1,12 +1,14 @@
 {
   "dockerComposeFile": "./compose.yaml",
-  "remoteUser": "${localEnv:REMOTE_USER}",
   "service": "cloud-pin",
-  "runServices": ["cloud-pin"],
+  "shutdownAction": "stopCompose",
+  "overrideCommand": true,
+  "remoteUser": "${localEnv:REMOTE_USER}",
   "workspaceFolder": "/workspace",
   "features": {
     "ghcr.io/devcontainers-extra/features/uv:1": {},
-    "ghcr.io/devcontainers/features/git:1": {}
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
   },
   "containerEnv": {
     "UV_LINK_MODE": "copy"

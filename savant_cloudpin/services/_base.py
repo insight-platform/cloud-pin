@@ -63,9 +63,11 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
     def __init__(self, config: BaseServiceConfig, measurements: Measurements) -> None:
         super().__init__(measurements)
         self._io_timeout = config.io_timeout
-        self._sink = NonBlockingWriter(*config.sink.as_dealer().to_args())
-        self._source = NonBlockingReader(*config.source.as_router().to_args())
-        self._sink_queue = Queue[bytes](maxsize=2 * config.sink.max_inflight_messages)
+        self._zmq_sink = NonBlockingWriter(*config.zmq_sink.as_dealer().to_args())
+        self._zmq_src = NonBlockingReader(*config.zmq_src.as_router().to_args())
+        self._sink_queue = Queue[bytes](
+            maxsize=2 * config.zmq_sink.max_inflight_messages
+        )
         self._sink_drops = 0
         self._last_log = datetime.now()
         self._connection: ServiceConnection | None = None
@@ -95,15 +97,15 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
 
     async def _inbound_ws_loop(self) -> None:
         while self.running:
-            self._measurements.measure_zmq_capacity(self._sink)
-            while self._sink.has_capacity():
+            self._measurements.measure_zmq_capacity(self._zmq_sink)
+            while self._zmq_sink.has_capacity():
                 if self._sink_queue.empty():
                     get_task = asyncio.create_task(self._sink_queue.get())
                     logger.debug("Waiting inbound WebSockets ...")
                     while not get_task.done():
                         await asyncio.wait([get_task], timeout=self._io_timeout)
                         self._log_dropped()
-                        self._measurements.measure_zmq_capacity(self._sink)
+                        self._measurements.measure_zmq_capacity(self._zmq_sink)
                         if not self.running:
                             return
                     frame = await get_task
@@ -113,7 +115,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                 self._measurements.measure_sink_message_data(frame)
                 topic, msg, extra = protocol.unpack_stream_frame(frame)
                 self._measurements.add_sink_message_measure(msg)
-                self._sink.send_message(topic, msg, extra)
+                self._zmq_sink.send_message(topic, msg, extra)
                 self._sink_queue.task_done()
                 await asyncio.sleep(0)
 
@@ -123,9 +125,9 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
 
     async def _outbound_ws_loop(self) -> None:
         while self.running:
-            self._measurements.measure_zmq_capacity(self._source)
+            self._measurements.measure_zmq_capacity(self._zmq_src)
             transport = self._writing_transport()
-            if not transport or self._source.is_empty():
+            if not transport or self._zmq_src.is_empty():
                 if self._is_connected():
                     logger.debug(
                         f"WebSockets writing is paused. Waiting {self._io_timeout} sec."
@@ -133,7 +135,7 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                 await asyncio.sleep(self._io_timeout)
                 continue
 
-            while msg := self._source.try_receive():
+            while msg := self._zmq_src.try_receive():
                 if isinstance(msg, ReaderResultMessage):
                     break
             else:
@@ -142,10 +144,10 @@ class PumpServiceBase[T](LifeCycleServiceBase[T]):
                 continue
 
             topic, message, extra = msg.topic, msg.message, msg.data(0)
-            self._measurements.add_source_message_measure(message)
+            self._measurements.add_src_message_measure(message)
             packed = protocol.pack_stream_frame(topic, message, extra)
             transport.send(WSMsgType.BINARY, packed)
-            self._measurements.measure_source_message_data(packed)
+            self._measurements.measure_src_message_data(packed)
             await asyncio.sleep(0)
 
 

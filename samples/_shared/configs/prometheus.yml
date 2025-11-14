@@ -1,0 +1,11 @@
+global:
+  scrape_interval:     5s
+  evaluation_interval: 5s
+
+scrape_configs:
+  - job_name: cloud-pin-client
+    static_configs:
+      - targets: ["cloud-pin-client:8081"]
+  - job_name: cloud-pin-server
+    static_configs:
+      - targets: ["cloud-pin-server:8082"]

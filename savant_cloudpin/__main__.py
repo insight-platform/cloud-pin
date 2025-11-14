@@ -11,7 +11,7 @@ from savant_cloudpin.signals import handle_signals
 async def serve() -> None:
     config = load_config()
 
-    init_logging(config.log.spec)
+    init_logging(config.loglevel)
     logger = get_logger(__name__)
 
     logger.info("Configuration loaded")

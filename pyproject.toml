@@ -3,6 +3,7 @@ name = "savant-cloudpin"
 version = "0.1.0"
 description = "A service to run Savant pipeline remotely (cloud) via WebSockets (WS)"
 readme = "README.md"
+license-files = ["LICEN[CS]E*"]
 requires-python = ">=3.14"
 dependencies = [
     "aiohttp>=3.13.2",
@@ -48,3 +49,12 @@ dev = [
     "pytest-xdist>=3.8.0",
     "ruff>=0.14.4",
 ]
+
+[tool.uv.build-backend]
+source-include = ["savant_cloudpin/**"]
+module-name = "savant_cloudpin"
+module-root = ""
+
+[build-system]
+requires = ["uv_build>=0.9.8,<0.10.0"]
+build-backend = "uv_build"

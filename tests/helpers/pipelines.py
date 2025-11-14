@@ -17,24 +17,26 @@ from tests.helpers.messages import MessageData
 
 
 @asynccontextmanager
-async def run_identity_pipeline(source_url: str, sink_url: str) -> AsyncGenerator:
-    source_cfg = ReaderConfigBuilder(f"router+{source_url}")
-    source = NonBlockingReader(source_cfg.build(), results_queue_size=100)
-    sink_cfg = WriterConfigBuilder(f"dealer+{sink_url}")
+async def run_identity_pipeline(
+    zmq_src_endpoint: str, zmq_sink_endpoint: str, io_timeout: float = 0.01
+) -> AsyncGenerator:
+    src_cfg = ReaderConfigBuilder(f"router+{zmq_src_endpoint}")
+    src = NonBlockingReader(src_cfg.build(), results_queue_size=100)
+    sink_cfg = WriterConfigBuilder(f"dealer+{zmq_sink_endpoint}")
     sink = NonBlockingWriter(sink_cfg.build(), max_inflight_messages=100)
 
     async def pipeline() -> None:
         while running:
             if sink.has_capacity():
-                while msg := source.try_receive():
+                while msg := src.try_receive():
                     if isinstance(msg, ReaderResultMessage):
                         sink.send_message(msg.topic, msg.message, msg.data(0))
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(io_timeout)
 
     running = True
-    with sink, source:
+    with sink, src:
         sink.start()
-        source.start()
+        src.start()
 
         process_task = asyncio.create_task(pipeline())
         yield
@@ -62,13 +64,15 @@ def init_telemetry_tracer(
 
 
 @asynccontextmanager
-async def run_infinite_write(sink_url: str) -> AsyncGenerator:
-    sink_cfg = WriterConfigBuilder(f"dealer+{sink_url}")
+async def run_infinite_write(
+    zmq_sink_endpoint: str, io_timeout: float = 0.01
+) -> AsyncGenerator:
+    sink_cfg = WriterConfigBuilder(f"dealer+{zmq_sink_endpoint}")
     sink = NonBlockingWriter(sink_cfg.build(), max_inflight_messages=100)
 
     async def pipeline() -> None:
         while running:
-            await asyncio.sleep(0.01)
+            await asyncio.sleep(io_timeout)
             if not sink.has_capacity():
                 continue
             with TelemetrySpan("sink") as span:
@@ -88,21 +92,23 @@ async def run_infinite_write(sink_url: str) -> AsyncGenerator:
 
 
 @asynccontextmanager
-async def run_infinite_read(source_url: str) -> AsyncGenerator:
-    source_cfg = ReaderConfigBuilder(f"router+{source_url}")
-    source = NonBlockingReader(source_cfg.build(), results_queue_size=100)
+async def run_infinite_read(
+    zmq_src_endpoint: str, io_timeout: float = 0.01
+) -> AsyncGenerator:
+    src_cfg = ReaderConfigBuilder(f"router+{zmq_src_endpoint}")
+    src = NonBlockingReader(src_cfg.build(), results_queue_size=100)
 
     async def pipeline() -> None:
         while running:
-            await asyncio.sleep(0.01)
-            while not source.is_empty():
+            await asyncio.sleep(io_timeout)
+            while not src.is_empty():
                 with TelemetrySpan("source") as span:
-                    source.try_receive()
+                    src.try_receive()
                     span.set_status_ok()
 
     running = True
-    with source:
-        source.start()
+    with src:
+        src.start()
         process_task = asyncio.create_task(pipeline())
 
         yield

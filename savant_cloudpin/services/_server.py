@@ -23,8 +23,8 @@ class ServerService(PumpServiceBase["ServerService"]):
     def __init__(self, config: ServerServiceConfig) -> None:
         super().__init__(config, Measurements("Server", config.metrics))
         default_port = "443" if config.websockets.ssl else "80"
-        ws_url = config.websockets.endpoint
-        netloc = urlparse(ws_url).netloc.split(":")
+        ws_endpoint = config.websockets.endpoint
+        netloc = urlparse(ws_endpoint).netloc.split(":")
 
         self._host = netloc.pop(0)
         self._port = int(netloc.pop() if netloc else default_port)
@@ -69,10 +69,10 @@ class ServerService(PumpServiceBase["ServerService"]):
 
     @override
     async def _serve(self) -> None:
-        with self._source, self._sink:
+        with self._zmq_src, self._zmq_sink:
             async with self._create_server() as server:
-                self._source.start()
-                self._sink.start()
+                self._zmq_src.start()
+                self._zmq_sink.start()
 
                 await server.start_serving()
 

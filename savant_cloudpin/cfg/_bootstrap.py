@@ -14,10 +14,10 @@ from savant_cloudpin.cfg._defaults import (
 )
 from savant_cloudpin.cfg._models import ClientServiceConfig, ServerServiceConfig
 
-SOURCE_URL_ALLOWED_REGEX = (
+ZMQ_SRC_ENDPOINT_ALLOWED_REGEX = (
     r"(router[+])?(bind|connect):(tcp://[^: \t\n\r\f\v]+:\d+|ipc:///.+)"
 )
-SINK_URL_ALLOWED_REGEX = (
+ZMQ_SINK_EDNPOINT_ALLOWED_REGEX = (
     r"(dealer[+])?(bind|connect):(tcp://[^: \t\n\r\f\v]+:\d+|ipc:///.+)"
 )
 
@@ -33,10 +33,10 @@ def validated_dataclass[T: ClientServiceConfig | ServerServiceConfig](
     )
     assert isinstance(config, service_cls)
 
-    if not re.fullmatch(SOURCE_URL_ALLOWED_REGEX, config.source.url):
-        raise ValueError(f"Invalid source.url '{config.source.url}'")
-    if not re.fullmatch(SINK_URL_ALLOWED_REGEX, config.sink.url):
-        raise ValueError(f"Invalid sink.url '{config.sink.url}'")
+    if not re.fullmatch(ZMQ_SRC_ENDPOINT_ALLOWED_REGEX, config.zmq_src.endpoint):
+        raise ValueError(f"Invalid source.url '{config.zmq_src.endpoint}'")
+    if not re.fullmatch(ZMQ_SINK_EDNPOINT_ALLOWED_REGEX, config.zmq_sink.endpoint):
+        raise ValueError(f"Invalid sink.url '{config.zmq_sink.endpoint}'")
     return config
 
 
@@ -77,13 +77,11 @@ def merge_env_config(
 
 
 def join_log_spec(cfg: DictConfig | ListConfig) -> None:
-    if not isinstance(cfg, DictConfig):
+    if not isinstance(cfg, DictConfig) or "loglevel" not in cfg:
         return
-    if "log" not in cfg or "spec" not in cfg.log:
+    if not isinstance(cfg.loglevel, (DictConfig, dict)):
         return
-    if not isinstance(cfg.log.spec, (DictConfig, dict)):
-        return
-    cfg.log.spec = ",".join(f"{k}={v}" for k, v in cfg.log.spec.items())
+    cfg.loglevel = ",".join(f"{k}={v}" for k, v in cfg.loglevel.items())
 
 
 def load_config(

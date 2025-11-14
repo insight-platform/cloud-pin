@@ -1,0 +1,20 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ./configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-otlp-receiver
+    networks:
+      - dev
+      
+  otlp-collector:                                                                                                                                                       
+    image: otel/opentelemetry-collector-contrib:latest                                                                                                                                          
+    volumes:                            
+      - ./configs/otlp-collector.yaml:/etc/otelcol-contrib/config.yaml
+    networks:
+      - dev

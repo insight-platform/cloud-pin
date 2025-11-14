@@ -1,0 +1,20 @@
+server {
+    listen   ${NGINX_PORT} ssl;
+    
+    server_name              ${WEBSOCKETS_SERVER_NAME};
+    ssl_trusted_certificate  ${WEBSOCKETS_SSL_CA_FILE};
+    ssl_certificate          ${WEBSOCKETS_SSL_CERT_FILE};
+    ssl_certificate_key      ${WEBSOCKETS_SSL_KEY_FILE};
+    ssl_protocols            TLSv1.2 TLSv1.3;
+    ssl_ciphers              HIGH:!aNULL:!MD5;
+    ssl_verify_client        on;
+    ssl_client_certificate   ${WEBSOCKETS_SSL_CA_FILE};
+    ssl_verify_depth         2;
+
+    location / {
+        proxy_pass           ${WEBSOCKETS_ENDPOINT};
+        proxy_http_version   1.1;
+        proxy_set_header     Upgrade $http_upgrade;
+        proxy_set_header     Connection "upgrade";
+    }
+}
