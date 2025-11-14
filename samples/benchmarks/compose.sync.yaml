@@ -1,0 +1,38 @@
+services:
+  video-loop-source:
+    extends:
+      file: compose.no-sync.yaml
+      service: video-loop-source
+    environment:
+      SYNC_OUTPUT: True
+
+  cloud-pin-client:
+    extends:
+      file: compose.no-sync.yaml
+      service: cloud-pin-client
+
+  cloud-pin-server:
+    extends:
+      file: compose.no-sync.yaml
+      service: cloud-pin-server
+
+  ca:
+    extends:
+      file: compose.no-sync.yaml
+      service: ca
+
+  null_zmq_reader:
+    extends:
+      file: compose.no-sync.yaml
+      service: null_zmq_reader
+
+  benchmark:
+    extends:
+      file: compose.no-sync.yaml
+      service: benchmark
+    environment:
+      REPORT_PATH: /tmp/reports/sync-stream.txt
+
+volumes:
+  zmq_sockets:
+  ssl:
