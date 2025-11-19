@@ -1,0 +1,80 @@
+services:
+  receiver:
+    image: ghcr.io/insight-platform/savant-adapters-gstreamer:latest
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+    environment:
+      - ZMQ_ENDPOINT=dealer+connect:ipc:///tmp/zmq-sockets/input-video.ipc
+      - FFMPEG_LOGLEVEL=debug
+      - FFMPEG_PARAMS=rtsp_transport=tcp
+      - SYNC_OUTPUT=True
+      - URI=rtsp://hello.savant.video:8554/stream/town-centre
+      - SOURCE_ID=test
+      - EOS_ON_START=True
+    entrypoint: /opt/savant/adapters/gst/sources/ffmpeg.sh
+
+  cloud-pin-client:
+    build:
+      context: ../..
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+    command: mode=client
+    environment:
+      - WEBSOCKETS_SSL_CHECK_HOSTNAME=False
+      - WEBSOCKETS_SSL_INSECURE=True
+      - WEBSOCKETS_ENDPOINT=ws://cloud-pin-server:8080/
+      - WEBSOCKETS_API_KEY=secret_token
+      - ZMQ_SRC_ENDPOINT=bind:ipc:///tmp/zmq-sockets/input-video.ipc
+      - ZMQ_SRC_RESULTS_QUEUE_SIZE=300
+      - ZMQ_SINK_ENDPOINT=connect:ipc:///tmp/zmq-sockets/output-video.ipc
+      - ZMQ_SINK_MAX_INFLIGHT_MESSAGES=300
+      - METRICS_PROMETHEUS_ENDPOINT=http://0.0.0.0:8081/
+      - IO_TIMEOUT=0.01
+
+  cloud-pin-server:
+    build:
+      context: ../..
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+    command: mode=server
+    environment:
+      - WEBSOCKETS_ENDPOINT=ws://cloud-pin-server:8080/
+      - WEBSOCKETS_API_KEY=secret_token
+      - ZMQ_SRC_ENDPOINT=bind:ipc:///tmp/zmq-sockets/intermediate-video.ipc
+      - ZMQ_SRC_RESULTS_QUEUE_SIZE=300
+      - ZMQ_SINK_ENDPOINT=connect:ipc:///tmp/zmq-sockets/intermediate-video.ipc
+      - ZMQ_SINK_MAX_INFLIGHT_MESSAGES=300
+      - METRICS_PROMETHEUS_ENDPOINT=http://0.0.0.0:8082/
+      - IO_TIMEOUT=0.01
+
+  broadcaster:
+    image: ghcr.io/insight-platform/savant-adapters-deepstream:latest
+    restart: unless-stopped
+    ports:
+      - "6666:6666"
+      - "8888:888" # HLS
+    volumes:
+      - zmq_sockets:/tmp/zmq-sockets
+      - ../_shared/assets/smpte100_1920x1080.jpeg:/stub_imgs/smpte100_1920x1080.jpeg
+    environment:
+      - ZMQ_ENDPOINT=router+bind:ipc:///tmp/zmq-sockets/output-video.ipc
+      - SOURCE_ID=test
+      - STUB_FILE_LOCATION=/stub_imgs/smpte100_1920x1080.jpeg
+      - DEV_MODE=True
+    command: python -m adapters.ds.sinks.always_on_rtsp
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - 9090:9090
+    volumes:
+      - ../_shared/configs/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.enable-otlp-receiver
+
+volumes:
+  zmq_sockets:

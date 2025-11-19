@@ -38,7 +38,7 @@ def api_key() -> str:
 
 
 @pytest.fixture
-def ws_url(port_pool: PortPool) -> Generator[str]:
+def ws_endpoint(port_pool: PortPool) -> Generator[str]:
     with port_pool.lease() as port:
         yield f"wss://127.0.0.1:{port}/"
 

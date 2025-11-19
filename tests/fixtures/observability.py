@@ -13,21 +13,21 @@ def health_config(port_pool: PortPool) -> Generator[HealthConfig]:
 
 
 @pytest.fixture
-def prometheus_base_url(port_pool: PortPool) -> Generator[str]:
+def prometheus_base_endpoint(port_pool: PortPool) -> Generator[str]:
     with port_pool.lease() as port:
         yield f"http://127.0.0.1:{port}"
 
 
 @pytest.fixture
-def prometheus_config(prometheus_base_url: str) -> PrometheusConfig:
-    return PrometheusConfig(endpoint=prometheus_base_url)
+def prometheus_config(prometheus_base_endpoint: str) -> PrometheusConfig:
+    return PrometheusConfig(endpoint=prometheus_base_endpoint)
 
 
 @pytest.fixture
-def otlp_base_url() -> str:
+def otlp_base_endpoint() -> str:
     return "http://otlp-collector:4318"
 
 
 @pytest.fixture
-def otlp_metric_config(otlp_base_url: str) -> OTLPMetricConfig:
-    return OTLPMetricConfig(endpoint=otlp_base_url, export_timeout=0.1)
+def otlp_metric_config(otlp_base_endpoint: str) -> OTLPMetricConfig:
+    return OTLPMetricConfig(endpoint=otlp_base_endpoint, export_timeout=0.1)
